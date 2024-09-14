@@ -1,0 +1,37 @@
+{
+  "greeting": "<b>Привет</b>, <a href='tg://user?id=${id}'>${first_name}</a>!\n\n<i>Добро пожаловать в наш бот! С помощью этого бота вы можете разместить заказ через наши существующие службы.</i>\n\n<i>Выберите одну из следующих команд, чтобы использовать бота:</i>",
+  "menu": {
+    "services": "\uD83D\uDEE0\uFE0F Услуги",
+    "shop": "\uD83D\uDECD Магазин",
+    "cart": "\uD83D\uDED2 Корзина",
+    "profile": "\uD83D\uDC64 Личный кабинет",
+    "about": "\uD83D\uDCD6 О нас",
+    "contact": "\uD83D\uDCF1 Контакт",
+    "language": "\uD83C\uDF10 Выбор языка",
+    "settings": "\u2699\uFE0F Настройки",
+    "help": "\uD83D\uDC65 Помощь",
+    "back": "\u2B05\uFE0F Назад",
+    "back_to_menu": "\u2B05\uFE0F Вернуться в меню"
+  },
+  "language": {
+    "uz": "\uD83C\uDDFA\uD83C\uDDFF O'zbekcha \uD83C\uDDFA\uD83C\uDDFF",
+    "ru": "\uD83C\uDDF7\uD83C\uDDFA Русский \uD83C\uDDF7\uD83C\uDDFA",
+    "en": "\uD83C\uDDEC\uD83C\uDDE7 English \uD83C\uDDEC\uD83C\uDDE7",
+    "title": "<b>Tilni tanlash</b>",
+    "description": "<b><i>\uD83C\uDDFA\uD83C\uDDFF Bot tilini o'zgartirish uchun quyidagi buyruqlardan birini tanlang.</i>\n<i>\uD83C\uDDF7\uD83C\uDDFA Выберите одну из команд ниже, чтобы изменить язык бота.</i>\n<i>\uD83C\uDDEC\uD83C\uDDE7 Choose one of the commands below to change the bot language.</i>\n\n<i>Текущий язык бота — русский.</i></b>",
+    "changed": "Изменен язык бота на русский."
+  },
+  "cart": {
+    "title": "<b>Корзина</b>",
+    "empty": "Ваша корзина пуста. Вы еще не выбрали ни одного товара?!",
+    "total": "Итого",
+    "quantity": "Количество",
+    "price": "Цена",
+    "add": "\uD83D\uDECD Добавить в корзину \uD83D\uDECD",
+    "checkout": "\uD83D\uDCDD Оформить заказ \uD83D\uDCDD",
+    "remove": "\uD83D\uDDD1 Удалить \uD83D\uDDD1",
+    "clear": "\uD83D\uDDD1 Очистить корзину \uD83D\uDDD1",
+    "back": "\u2B05\uFE0F Назад"
+  },
+  "unknown_command": "<i>Неизвестная команда. Пожалуйста, выберите одну из следующих кнопок.</i>"
+}

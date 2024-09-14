@@ -1,0 +1,37 @@
+{
+  "greeting": "<b>Hello</b>, <a href='tg://user?id=${id}'>${first_name}</a>!\n\n<i>Welcome to our bot! With this bot, you can place your order through our existing services.\n\nSelect one of the following commands to use the bot:</i>",
+  "menu": {
+    "services": "\uD83D\uDEE0\uFE0F Services",
+    "shop": "\uD83D\uDECD Shop",
+    "cart": "\uD83D\uDED2 Cart",
+    "profile": "\uD83D\uDC64 Personal cabinet",
+    "about": "\uD83D\uDCD6 About us",
+    "contact": "\uD83D\uDCF1 Contact",
+    "language": "\uD83C\uDF10 Select language",
+    "settings": "\u2699\uFE0F Settings",
+    "help": "\uD83D\uDC65 Help",
+    "back": "\u2B05\uFE0F Back",
+    "back_to_menu": "\u2B05\uFE0F Back to menu"
+  },
+  "language": {
+    "uz": "\uD83C\uDDFA\uD83C\uDDFF O'zbekcha \uD83C\uDDFA\uD83C\uDDFF",
+    "ru": "\uD83C\uDDF7\uD83C\uDDFA Русский \uD83C\uDDF7\uD83C\uDDFA",
+    "en": "\uD83C\uDDEC\uD83C\uDDE7 English \uD83C\uDDEC\uD83C\uDDE7",
+    "title": "<b>Language selection</b>",
+    "description": "<b><i>\uD83C\uDDFA\uD83C\uDDFF Bot tilini o'zgartirish uchun quyidagi buyruqlardan birini tanlang.</i>\n<i>\uD83C\uDDF7\uD83C\uDDFA Выберите одну из команд ниже, чтобы изменить язык бота.</i>\n<i>\uD83C\uDDEC\uD83C\uDDE7 Choose one of the commands below to change the bot language.</i>\n\n<i>The current bot language is English.</i></b>",
+    "changed": "The bot language has been changed to English"
+  },
+    "cart": {
+        "title": "<b>Cart</b>",
+        "empty": "Your cart is empty. You haven't selected any products yet?!",
+        "total": "Total",
+        "quantity": "Quantity",
+        "price": "Price",
+        "add": "\uD83D\uDECD Add to cart \uD83D\uDECD",
+        "checkout": "\uD83D\uDCDD Checkout \uD83D\uDCDD",
+        "remove": "\uD83D\uDDD1 Remove \uD83D\uDDD1",
+        "clear": "\uD83D\uDDD1 Clear cart \uD83D\uDDD1",
+        "back": "\u2B05\uFE0F Back"
+    },
+    "unknown_command": "<i>Unknown command. Please select one of the following buttons.</i>"
+}

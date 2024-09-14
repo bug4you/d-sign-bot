@@ -1,0 +1,30 @@
+{
+  "name": "d-sign-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "ts-node ./src/bot.ts",
+    "dev": "nodemon",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@telegraf/session": "^2.0.0-beta.7",
+    "@types/node": "^22.5.4",
+    "consola": "^3.2.3",
+    "dotenv": "^16.4.5",
+    "redis": "^4.7.0",
+    "reflect-metadata": "^0.2.2",
+    "sqlite3": "^5.1.7",
+    "telegraf": "^4.16.3",
+    "telegraf-i18n": "^6.6.0",
+    "telegram-keyboard": "^2.3.5",
+    "ts-node": "^10.9.2",
+    "typeorm": "^0.3.20"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4",
+    "typescript": "^5.5.3"
+  },
+  "private": true
+}
