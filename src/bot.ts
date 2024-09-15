@@ -110,6 +110,17 @@ AppDataSource.initialize()
                 case i18n.t("profile.menu.bot_categories"):
                     await shopCategoriesAction(ctx);
                     break;
+                case i18n.t("shop.categories.add_category"):
+                    await ctx.replyWithHTML("Add category");
+                    // await ctx.replyWithHTML(i18n.t("shop.categories.add_category"));
+                    break;
+                case i18n.t("shop.categories.edit_category"):
+                    await ctx.replyWithHTML("Edit category");
+                    // await ctx.replyWithHTML(i18n.t("shop.categories.edit_category"));
+                    break;
+                case i18n.t("shop.categories.all_categories"):
+                    await ctx.replyWithHTML("All categories");
+                    break;
                 case i18n.t("profile.menu.profile_info"):
                     let user = await userService.getUserByTelegramId(ctx.from.id);
                     await profileInfoAction(ctx, user);

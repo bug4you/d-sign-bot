@@ -1,12 +1,13 @@
 // src/service/CategoryService.ts
 import { getRepository, Repository } from "typeorm";
 import { Category } from "../entity/Category";
+import {AppDataSource} from "../data-source";
 
 export class CategoryService {
     private categoryRepository: Repository<Category>;
 
     constructor() {
-        this.categoryRepository = getRepository(Category);
+        this.categoryRepository = AppDataSource.getRepository(Category);
     }
 
     async createCategory(data: Partial<Category>): Promise<Category> {

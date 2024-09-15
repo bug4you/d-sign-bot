@@ -36,7 +36,7 @@
       "add_category": "\uD83D\uDCDD Kategoriya qo'shish",
       "edit_category": "\uD83D\uDD27 Kategoriyani tahrirlash",
       "all_categories": "\uD83D\uDCD2 Barcha kategoriyalar",
-      "back_to_shop_menu": "\u2B05\uFE0F Do'konga qaytish"
+      "back_to_shop_menu": "\uD83D\uDECD Do'konga qaytish"
     }
   },
   "cart": {
@@ -75,6 +75,22 @@
       "surname": "Familiya: ",
       "phone": "Telefon raqam: ",
       "telegram_id": "Telegram ID: "
+    },
+    "category": {
+      "add": {
+        "prompt": "Yangi kategoriya nomini kiriting:",
+        "success": "Kategoriya muvaffaqiyatli qo'shildi: {{categoryName}}"
+      },
+      "edit": {
+        "prompt": "Kategoriya nomini kiriting:",
+        "success": "Kategoriya muvaffaqiyatli tahrirlandi: {{categoryName}}"
+      }
+    },
+    "bot_statistics": {
+      "text": "<b>\uD83D\uDCCA Bot statistikasi:</b>\n<i>Quyidagi statistikalar botning faoliyatini namoyish etadi:</i>\n\n<b>\uD83D\uDCCA Botdan foydalanuvchilar soni:</b> <i>${userCount}</i>\n<b>\uD83D\uDCCA Mavjud dizaynerlar soni:</b> <i>${designerCount}</i>\n<b>\uD83D\uDCCA Mavjud dizaynlar soni:</b> <i>${designCount}</i>\n<b>\uD83D\uDCCA Mavjud maxsulotlar soni:</b> <i>${productCount}</i>\n<b>\uD83D\uDCCA Barcha kategoriyalar soni:</b> <i>${categoryCount}</i>"
+    },
+    "bot_categories": {
+      "text": "<b>\uD83D\uDCD2 Bot kategoriyalari:</b>\n<i>Quyidagi kategoriyalar botda mavjud:</i>\n\n${categories}"
     }
   },
   "unknown_command": "<i>Noma'lum buyruq. Iltimos, quyidagi tugmalardan birini tanlang.</i>"

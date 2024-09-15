@@ -62,6 +62,17 @@ export const shopCategoriesAction = async (ctx: any): Promise<void> => {
     await ctx.replyWithHTML(i18n.t("shop.categories.title"), shopCategoriesButtons(i18n));
 }
 
+// src/utils/BotActions.ts
+export const addCategoryAction = async (ctx: any, i18n: any): Promise<void> => {
+    await ctx.reply(i18n.t('category.add.prompt'));  // Kategoriya nomini kiritish uchun so'rov
+    ctx.session.awaitingCategoryName = true;  // Bu yerda session orqali javobni kutamiz
+};
+
+export const editCategoryAction = async (ctx: any, i18n: any, categoryId: number): Promise<void> => {
+    await ctx.reply(i18n.t('category.edit.prompt'));  // Tahrir qilmoqchi bo'lgan kategoriya nomini so'rang
+    ctx.session.awaitingCategoryUpdate = { id: categoryId };  // Sessionda kategoriya ID ni saqlab qo'yamiz
+};
+
 export const profileAction = async (ctx: any): Promise<void> => {
     const i18n = ctx.i18n;
     let profileButtons = ctx.session.role === "admin" ? adminProfileButtons(i18n) : ctx.session.role === "designer" ? designerProfileButtons(i18n) : userProfileButtons(i18n);
@@ -85,6 +96,16 @@ export const profileBotStatisticsAction = async (ctx: any): Promise<void> => {
     // const userCount = await userService.getUserCount();
     // const designerCount = await userService.getDesignerCount();
     // const orderCount = await orderService.getOrderCount();
-    await ctx.replyWithHTML(i18n.t("profile.bot_statistics.text"));
-
+    let productCount = 0;
+    let categoryCount = 0;
+    let designCount = 0;
+    let designerCount = 0;
+    let userCount = 0;
+    await ctx.replyWithHTML(i18n.t("profile.bot_statistics.text", {
+        userCount,
+        designerCount,
+        productCount,
+        categoryCount,
+        designCount
+    }));
 }
