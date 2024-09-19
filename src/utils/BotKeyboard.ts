@@ -195,6 +195,12 @@ export const designPaginationButtons = (i18n: any, page: number, total: number, 
                 text: i18n.t("shop.product_view.product.add_to_cart"),
                 callback_data: `add_to_cart_${design_id}`
             }
+        ],
+        [
+            {
+                text: i18n.t("shop.product_view.back_to_shop_menu"),
+                callback_data: "back_to_shop_menu"
+            }
         ]
     ]).inline();
 }

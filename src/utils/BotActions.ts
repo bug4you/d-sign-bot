@@ -1,12 +1,13 @@
 import {
     adminProfileButtons,
-    designerProfileButtons, designPaginationButtons,
+    designerProfileButtons,
+    designPaginationButtons,
     menuButtons,
     shopCategoriesButtons,
-    shopMenuButtons, userProfileButtons
+    shopMenuButtons,
+    userProfileButtons
 } from "./BotKeyboard";
 import {CartService} from "../service/CartService";
-import {Keyboard} from "telegram-keyboard";
 import {User} from "../entity/User";
 import consola from "consola";
 import {CategoryService} from "../service/CategoryService";
@@ -14,6 +15,11 @@ import {DesignerRequestService} from "../service/DesignerRequestService";
 import {UserService} from "../service/UserService";
 import {Design} from "../entity/Design";
 import {DesignService} from "../service/DesignService";
+
+const designerRequestService = new DesignerRequestService();
+const userService = new UserService();
+const designService = new DesignService();
+const cartService = new CartService();
 
 export const startAction = async (ctx: any): Promise<void> => {
     // @ts-ignore
@@ -28,26 +34,66 @@ export const cartAction = async (ctx: any): Promise<void> => {
         return ctx.reply("Foydalanuvchi topilmadi.");
     }
 
-    const cartService = new CartService();
-    const carts = await cartService.getCartsByTelegramId(userId.toString());
-    if (typeof carts === "number") {
-        return ctx.reply("Foydalanuvchi topilmadi.");
+    let userCart = await cartService.getUserCart(userId);
+    let i18n = ctx.i18n;
+    if (userCart.length === 0) {
+        return ctx.replyWithHTML(i18n.t("cart.empty"));
     }
+    let fullTextResponse = "";
+    userCart.forEach((cartItem, index) => {
+        fullTextResponse += i18n.t("cart.product.full_text", {
+            index: index + 1,
+            title: cartItem.design.title_uz,
+            price: cartItem.design.price,
+            quantity: cartItem.quantity,
+            removeDesignId: cartItem.design.id
+        });
+    });
 
-    const i18n = ctx.i18n;
-    if (carts.length === 0) {
-        return ctx.replyWithHTML(i18n.t("cart.empty"), Keyboard.make([
-            i18n.t("menu.back_to_menu")
-        ]).reply());
+    let message = await ctx.replyWithHTML(i18n.t("cart.text", {products: fullTextResponse, cartProductSize: userCart.length}), {
+        reply_markup: {
+            inline_keyboard: [
+                [{text: i18n.t("cart.checkout"), callback_data: "checkout"}],
+                [{text: i18n.t("cart.clear"), callback_data: "clear_cart"}],
+                [{text: i18n.t("cart.back_to_shop"), callback_data: "back_to_shop_menu"}]
+            ]
+        }
+    });
+    ctx.session.cartMessageId = message.message_id;
+    console.clear();
+};
+
+export const clearCartAction = async (ctx: any): Promise<void> => {
+    const userId = ctx.from.id;
+    try {
+        await cartService.clearUserCart(userId);
+        await ctx.reply("Savatcha tozalandi.");
+        await ctx.answerCbQuery("Savatcha tozalandi.");
+        await ctx.deleteMessage();
+        await cartAction(ctx);
+    } catch (error) {
+        console.error("Savatchani tozlashda xatolik:", error);
+        await ctx.reply("❌ Xatolik yuz berdi.");
     }
+};
 
-    // let cartMessage = "Sizning savatchangiz:\n";
-    // carts.forEach((cart, index) => {
-    //     cartMessage += `${index + 1}. Design: ${cart.design.name}, Quantity: ${cart.quantity}\n`;
-    // });
-
-    await ctx.replyWithHTML("Sizning savatchangiz:");
-    // await ctx.reply(cartMessage);
+export const removeFromCartAction = async (ctx: any): Promise<void> => {
+    const userId = ctx.from.id;
+    const designId = parseInt(ctx.match[1]);
+    try {
+        await cartService.removeFromCart(userId, designId);
+        await ctx.replyWithHTML(ctx.i18n.t("cart.product.remove.success"));
+        await cartAction(ctx);
+        console.clear();
+        consola.success(ctx.session.cartMessageId);
+        if (ctx.session.cartMessageId) {
+            let deleteMessage1 = await ctx.telegram.deleteMessage(ctx.chat.id, ctx.session.cartMessageId);
+            consola.warn(deleteMessage1);
+        }
+    } catch (error) {
+        console.error("Savatchadan olib tashlashda xatolik:", error);
+        await ctx.reply("❌ Xatolik yuz berdi.");
+    }
 };
 
 export const shopAction = async (ctx: any): Promise<void> => {
@@ -129,10 +175,6 @@ export const profileBotStatisticsAction = async (ctx: any): Promise<void> => {
         designCount
     }));
 };
-
-const designerRequestService = new DesignerRequestService();
-const userService = new UserService();
-const designService = new DesignService();
 
 // Admin dizayner so'rovlarni ko'rish uchun ishga tushdi
 export const adminDesignerApprovalAction = async (ctx: any): Promise<void> => {
@@ -250,6 +292,11 @@ export const viewDesignAction = async (ctx: any): Promise<void> => {
         return;
     }
     const countOnlyApprovedDesigns = await designService.getCountOfApprovedDesigns();
+    await ctx.replyWithHTML(i18n.t("shop.product_view.welcome"), {
+        reply_markup: {
+            remove_keyboard: true
+        }
+    });
     await ctx.replyWithPhoto(designs[0].image, {
         caption: i18n.t("shop.product_view.product.text", {
             title: designs[0].title_uz,
@@ -309,8 +356,22 @@ export const viewPreviousDesignAction = async (ctx: any): Promise<void> => {
     await deleteMessage(ctx);
 };
 
-export const addDesignToCartAction = async (ctx: any): Promise<void> => {
+export const addToCartAction = async (ctx: any): Promise<void> => {
+    const designId = parseInt(ctx.match[1]); // Dizayn ID'sini olish
+    try {
+        // Savatchaga qo'shish
+        await cartService.addToCart(ctx.from.id, designId);
+        await ctx.answerCbQuery("✅ Dizayn savatchaga qo'shildi.");
+    } catch (error) {
+        console.error("Savatchaga qo'shishda xatolik:", error);
+        await ctx.reply("❌ Xatolik yuz berdi.");
+    }
+};
 
+export const backToShopMenuAction = async (ctx: any): Promise<void> => {
+    const i18n = ctx.i18n;
+    await ctx.replyWithHTML(i18n.t("shop.menu.title"), shopMenuButtons(i18n));
+    await deleteMessage(ctx);
 }
 
 const deleteMessage = async (ctx: any): Promise<void> => {

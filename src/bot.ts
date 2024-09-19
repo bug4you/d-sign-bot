@@ -8,13 +8,27 @@ import consola from "consola";
 import {resolve} from "node:path";
 import {languageButtons, menuButtons, newDesignAdminConfirmationButtons} from "./utils/BotKeyboard";
 import {
-    addCategoryAction, addNewDesignAction, adminDesignerApprovalAction, adminDesignerDeclineAction,
-    cartAction, getCategoriesAction, getMyApprovedDesignsAction, handleDesignerApproval, pendingRequestsAction,
-    profileAction, profileBotStatisticsAction,
-    profileInfoAction, requestDesignerAction,
+    addCategoryAction,
+    addNewDesignAction,
+    addToCartAction,
+    adminDesignerApprovalAction,
+    adminDesignerDeclineAction,
+    backToShopMenuAction,
+    cartAction, clearCartAction,
+    getCategoriesAction,
+    getMyApprovedDesignsAction,
+    handleDesignerApproval,
+    pendingRequestsAction,
+    profileAction,
+    profileBotStatisticsAction,
+    profileInfoAction, removeFromCartAction,
+    requestDesignerAction,
     shopAction,
     shopCategoriesAction,
-    startAction, viewDesignAction, viewNextDesignAction, viewPreviousDesignAction
+    startAction,
+    viewDesignAction,
+    viewNextDesignAction,
+    viewPreviousDesignAction
 } from "./utils/BotActions";
 import {CategoryService} from "./service/CategoryService";
 import {
@@ -106,6 +120,7 @@ AppDataSource.initialize()
                 consola.error(e.message);
             }
         });
+        bot.command(/rfc_([0-9]+)/, removeFromCartAction);
 
         bot.on("text", async (ctx) => {
             // @ts-ignore
@@ -218,6 +233,9 @@ AppDataSource.initialize()
                     break;
                 case i18n.t("profile.menu.me_approved_design"):
                     await getMyApprovedDesignsAction(ctx);
+                    break;
+                case i18n.t("cart.clear"):
+                    await clearCartAction(ctx);
                     break;
                 default:
                     await ctx.replyWithHTML(i18n.t("unknown_command"), menuButtons(i18n));
@@ -354,10 +372,9 @@ AppDataSource.initialize()
         bot.action("do_nothing", async (ctx) => {
             await ctx.answerCbQuery("Do nothing");
         });
-        bot.action(/add_to_cart_/i, async (ctx) => {
-            //
-        });
-
+        bot.action(/add_to_cart_([0-9]+)/, addToCartAction);
+        bot.action("back_to_shop_menu", backToShopMenuAction);
+        bot.action("clear_cart", clearCartAction);
         bot.catch((error): void => {
             consola.error(error);
         });

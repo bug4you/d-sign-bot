@@ -32,6 +32,7 @@
       "completed_orders": "\uD83D\uDCC5 Yakunlangan buyurtmalar"
     },
     "product_view": {
+      "welcome": "<b>Do'konimizga xush kelibsiz!</b>\n\n<i>Quyidagi dizaynlardan birini tanlang:</i>",
       "title": "<b>Maxsulotlar</b>",
       "empty": "<i>Do'kon bo'sh. Tez fursatlar oralig'ida yangi dizaynlar qo'shiladi. Bizni kuzatib boring 😇</i>",
       "back_to_shop_menu": "\uD83D\uDECD Do'konga qaytish",
@@ -51,6 +52,18 @@
   "cart": {
     "title": "<b>Savatcha</b>",
     "empty": "<i>Savatchangiz bo'sh. Siz hali hech qanday maxsulotni tanlamagansiz?!</i>",
+    "text": "<b>\uD83D\uDED2 Savatcha:</b>\n<i>Sizning savatchangizdagi maxsulotlar ro'yxati quyidagicha:</i>\n\n${products}\n\n<b>\uD83D\uDED2 Savatcha:</b>\n<i>Savatchadagi maxsulotlar soni: ${cartProductSize}</i>",
+    "product": {
+      "title": "<b>\uD83C\uDF81 Maxsulot:</b>",
+      "name": "<b>Nomi:</b> <i>${title}</i>",
+      "price": "<b>Narxi:</b> <i>${price}</i>",
+      "total": "<b>Jami:</b> <i>${total}</i>",
+      "full_text": "\n<b>${index}. Maxsulot:</b>\n<b>Nomi:</b> <i>${title}</i>\n<b>Narxi:</b> <i>${price}</i>\n<b>Soni:</b> <i>${quantity}</i>\n<b>O'chirish:</b> <i>/rfc_${removeDesignId}</i>",
+      "remove": {
+        "success": "<i>Maxsulot savatchadan muvaffaqiyatli o'chirildi.</i>",
+        "error": "<i>Maxsulot savatchadan o'chirishda xatolik yuz berdi. Iltimos, qaytadan urinib ko'ring.</i>"
+      }
+    },
     "total": "Jami",
     "quantity": "Soni",
     "price": "Narxi",
@@ -58,6 +71,7 @@
     "checkout": "\uD83D\uDCDD Buyurtma berish \uD83D\uDCDD",
     "remove": "\uD83D\uDDD1 O'chirish \uD83D\uDDD1",
     "clear": "\uD83D\uDDD1 Savatchani tozalash \uD83D\uDDD1",
+    "back_to_shop": "\uD83D\uDECD Do'konga qaytish",
     "back": "\u2B05\uFE0F Ortga"
   },
   "profile": {

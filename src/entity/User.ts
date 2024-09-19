@@ -1,5 +1,6 @@
 import {Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn} from "typeorm";
 import {Design} from "./Design";
+import {Cart} from "./Cart";
 
 @Entity()
 export class User {
@@ -33,6 +34,10 @@ export class User {
     // Dizaynlar bilan bog'lash
     @OneToMany(() => Design, (design) => design.designer)
     designs!: Design[];
+
+    // Savatcha yozuvlari bilan bog'lash
+    @OneToMany(() => Cart, (cart) => cart.user)
+    cartItems!: Cart[];  // Foydalanuvchining savatchadagi dizaynlari
 
     @Column({nullable: true, update: false})
     @CreateDateColumn()
