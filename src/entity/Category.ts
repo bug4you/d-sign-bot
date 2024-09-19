@@ -1,5 +1,6 @@
 // src/entity/Category.ts
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from "typeorm";
+import {Design} from "./Design";
 
 @Entity()
 export class Category {
@@ -10,8 +11,12 @@ export class Category {
     name_uz!: string;
 
     @Column()
-    name_ru: string = '';
+    name_ru?: string = '';
 
     @Column()
-    name_en: string = '';
+    name_en?: string = '';
+
+    // Dizaynlar bilan bog'lash
+    @OneToMany(() => Design, (design) => design.category)
+    designs!: Design[];
 }

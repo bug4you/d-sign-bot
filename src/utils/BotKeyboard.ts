@@ -1,4 +1,8 @@
 import {Keyboard} from "telegram-keyboard";
+import {Category} from "../entity/Category";
+import consola from "consola";
+
+type CategoryType = Category[];
 
 export const menuButtons = (i18n: any) => {
     return Keyboard.make([
@@ -91,17 +95,106 @@ export const adminProfileButtons = (i18n: any) => {
 export const designerProfileButtons = (i18n: any) => {
     return Keyboard.make([
         [i18n.t("profile.menu.profile_info"), i18n.t("profile.menu.bot_statistics")],
-        [i18n.t("profile.menu.bot_categories")],
-        [i18n.t("profile.menu.unapproved_designs")],
-        [i18n.t("profile.menu.approved_designs")],
+        [i18n.t("profile.menu.add_new_design")],
+        [i18n.t("profile.menu.me_not_approved_design")],
+        [i18n.t("profile.menu.me_approved_design")],
         [i18n.t("menu.back_to_menu")]
     ]).reply();
 };
+
+export const designCategoryButtons = (i18n: any, categories: CategoryType) => {
+    return Keyboard.make(categories.map((category: Category) => {
+        return [
+            {
+                text: category.name_uz,
+                callback_data: `category_${category.id}`
+            }
+        ];
+    })).inline({
+        columns: 2
+    });
+}
+
+export const newDesignConfirmationButtons = (i18n: any) => {
+    return Keyboard.make([
+        [
+            {
+                text: i18n.t("design.add.wizard.view.i_checked"),
+                callback_data: "confirm_new_design_in_wizard"
+            },
+        ],
+        [
+            {
+                text: i18n.t("design.add.wizard.view.i_deleted"),
+                callback_data: "decline_new_design_in_wizard"
+            }
+        ]
+    ]).inline();
+};
+
+export const newDesignAdminConfirmationButtons = (i18n: any, design_id: number | string) => {
+    return Keyboard.make([
+        [
+            {
+                text: i18n.t("design.add.wizard.confirmation.i_confirm"),
+                callback_data: `confirm_new_design_${design_id}`
+            },
+        ],
+        [
+            {
+                text: i18n.t("design.add.wizard.confirmation.i_decline"),
+                callback_data: `decline_new_design_${design_id}`
+            }
+        ]
+    ]).inline();
+}
 
 export const userProfileButtons = (i18n: any) => {
     return Keyboard.make([
         [i18n.t("profile.menu.profile_info")],
         [i18n.t("profile.menu.bot_categories")],
+        [i18n.t("profile.menu.being_designer")],
         [i18n.t("menu.back_to_menu")]
     ]).reply();
+};
+
+export const designerConfirmationButtons = (i18n: any) => {
+    return Keyboard.make([
+        [i18n.t("designer.confirmation.i_confirm")],
+        [i18n.t("designer.confirmation.i_decline")]
+    ]).resize().reply();
+}
+
+export const designerConfirmationAdminButtons = (i18n: any, design_id: number | string) => {
+    return Keyboard.make([
+        [{text: i18n.t("designer.confirmation.i_confirm"), callback_data: `approve_${design_id}`}],
+        [{text: i18n.t("designer.confirmation.i_decline"), callback_data: `decline_${design_id}`}],
+        [{text: i18n.t("designer.confirmation.i_will_check_later"), callback_data: `check_later`}]
+    ]).inline();
+};
+
+export const designPaginationButtons = (i18n: any, page: number, total: number, design_id: number | string) => {
+    consola.success(`Page: ${page}, Total: ${total}`);
+    return Keyboard.make([
+        [
+            {
+                text: i18n.t("pagination.previous"),
+                callback_data: `previous_page_${page - 1}`
+            },
+            {
+                text: `${page + 1}/${total}`,
+                callback_data: "do_nothing"
+            },
+            {
+                text: i18n.t("pagination.next"),
+                callback_data: `next_page_${page + 1}`
+            }
+        ],
+        [
+            {
+                text: i18n.t("shop.product_view.product.add_to_cart"),
+                callback_data: `add_to_cart_${design_id}`
+            }
+        ]
+    ]).inline();
 }

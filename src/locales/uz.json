@@ -31,6 +31,15 @@
       "active_orders": "\uD83D\uDCC4 Aktiv buyurtmalar",
       "completed_orders": "\uD83D\uDCC5 Yakunlangan buyurtmalar"
     },
+    "product_view": {
+      "title": "<b>Maxsulotlar</b>",
+      "empty": "<i>Do'kon bo'sh. Tez fursatlar oralig'ida yangi dizaynlar qo'shiladi. Bizni kuzatib boring 😇</i>",
+      "back_to_shop_menu": "\uD83D\uDECD Do'konga qaytish",
+      "product": {
+        "text": "<b>\uD83C\uDF81 Maxsulot:</b>\n<i>Quyidagi ma'lumotlar sizning tanlagan maxsulot bo'yicha:</i>\n\n<b>\uD83C\uDF81 Nomi:</b> <i>${title}</i>\n<b>\uD83C\uDF81 Tavsifi:</b> <i>${description}</i>\n<b>\uD83C\uDF81 Narxi:</b> <i>${price}</i>\n<b>\uD83C\uDF81 Kategoriya:</b> <i>${category}</i>",
+        "add_to_cart": "\uD83D\uDECD Savatchaga qo'shish \uD83D\uDECD"
+      }
+    },
     "categories": {
       "title": "<b>Kategoriya</b> <i>menyusidan kerakli tugmani tanlang</i>",
       "add_category": "\uD83D\uDCDD Kategoriya qo'shish",
@@ -64,8 +73,12 @@
       "all_designers": "\uD83D\uDC64 Barcha dizaynerlar",
       "unapproved_designers": "\uD83D\uDC64 Tasdiqlanmagan dizaynerlar",
       "approved_designers": "\uD83D\uDC64 Tasdiqlangan dizaynerlar",
+      "me_not_approved_design": "Tasdiqlanmagan dizaynlarim",
+      "me_approved_design": "Tasdiqlangan dizaynlarim",
+      "add_new_design": "\uD83D\uDCC4 Yangi dizayn qo'shish",
       "approved_designs": "\uD83C\uDFDD Tasdiqlanmagan dizaynlar",
-      "back_to_menu": "\u2B05\uFE0F Menyuga qaytish"
+      "back_to_menu": "\u2B05\uFE0F Menyuga qaytish",
+      "being_designer": "\uD83D\uDC64 Dizayner bo'lish"
     },
     "info": {
       "title": "<b>Ma'lumotlarim</b>",
@@ -78,12 +91,21 @@
     },
     "category": {
       "add": {
-        "prompt": "Yangi kategoriya nomini kiriting:",
-        "success": "Kategoriya muvaffaqiyatli qo'shildi: {{categoryName}}"
+        "prompt": "<i>Yangi kategoriya nomini kiriting:</i>",
+        "success": "<i>Kategoriya muvaffaqiyatli qo'shildi: ${categoryName}</i>",
+        "error": "<i>Kategoriya qo'shishda xatolik yuz berdi. Iltimos, qaytadan urinib ko'ring.</i>",
+        "taken": "<i>Kategoriya allaqachon mavjud. Iltimos, boshqa nom kiriting.</i>"
       },
       "edit": {
-        "prompt": "Kategoriya nomini kiriting:",
-        "success": "Kategoriya muvaffaqiyatli tahrirlandi: {{categoryName}}"
+        "prompt": "<i>Kategoriya nomini kiriting:</i>",
+        "success": "<i>Kategoriya muvaffaqiyatli tahrirlandi: {{categoryName}}</i>",
+        "error": "<i>Kategoriya tahrir qilishda xatolik yuz berdi. Iltimos, qaytadan urinib ko'ring.</i>",
+        "not_found": "<i>Kategoriya topilmadi. Iltimos, boshqa nom kiriting.</i>",
+        "taken": "<i>Kategoriya allaqachon mavjud. Iltimos, boshqa nom kiriting.</i>"
+      },
+      "list": {
+        "title": "<b>Barcha kategoriyalar</b>",
+        "empty": "<i>Hozirda kategoriyalar mavjud emas. Iltimos, yangi kategoriya qo'shilishini kuting.</i>"
       }
     },
     "bot_statistics": {
@@ -93,5 +115,114 @@
       "text": "<b>\uD83D\uDCD2 Bot kategoriyalari:</b>\n<i>Quyidagi kategoriyalar botda mavjud:</i>\n\n${categories}"
     }
   },
-  "unknown_command": "<i>Noma'lum buyruq. Iltimos, quyidagi tugmalardan birini tanlang.</i>"
+  "settings": {
+    "title": "<b>Sozlamalar</b>",
+    "language": "\uD83C\uDF10 Tilni tanlash",
+    "back": "\u2B05\uFE0F Menyuga qaytish"
+  },
+  "help": {
+    "title": "<b>Yordam</b>",
+    "text": "<i>Agar savollaringiz yoki muammolaringiz bo'lsa, iltimos, quyidagi aloqa ma'lumotlaridan biriga murojaat qiling:</i>",
+    "contacts": {
+      "phone": "\uD83D\uDCF1 Telefon raqami",
+      "email": "\uD83D\uDCE7 Elektron pochta",
+      "telegram": "\uD83D\uDCE3 Telegram"
+    }
+  },
+  "about": {
+    "title": "<b>Biz haqimizda</b>"
+  },
+  "contact": {
+    "title": "<b>Aloqa</b>",
+    "text": "<i>Agar savollaringiz yoki muammolaringiz bo'lsa, iltimos, quyidagi aloqa ma'lumotlaridan biriga murojaat qiling:</i>",
+    "contacts": {
+      "phone": "\uD83D\uDCF1 Telefon raqami",
+      "email": "\uD83D\uDCE7 Elektron pochta",
+      "telegram": "\uD83D\uDCE3 Telegram"
+    }
+  },
+  "designer": {
+    "title": "<b>Dizayner bo'lish</b>",
+    "text": "<i>Agar siz dizayner bo'lishni xohlasangiz, iltimos, quyidagi ma'lumotlarni to'ldiring:</i>",
+    "first_name": {
+      "prompt": "<i>Ismingizni kiriting:</i>"
+    },
+    "last_name": {
+      "prompt": "<i>Familiyangizni kiriting:</i>"
+    },
+    "phone": {
+      "prompt": "<i>Telefon raqamingizni kiriting:</i>"
+    },
+    "phone_in_telegram": {
+      "prompt": "<i>Telegramdagi telefon raqamingizni kiriting:</i>",
+      "share": "📞 Telefon raqamni yuborish"
+    },
+    "passport_image": {
+      "prompt": "<i>Passportingizning rasmni yuboring:</i>"
+    },
+    "confirmation": {
+      "text": "<i>Ma'lumotlaringizni tasdiqlang:</i>\n\n<b>Ism:</b> <i>${first_name}</i>\n<b>Familiya:</b> <i>${last_name}</i>\n<b>Telefon raqam:</b> <i>${phone}</i>\n<b>Telegramdagi telefon raqam:</b> <i>${phone_in_telegram}</i>",
+      "i_confirm": "\u2705 Tasdiqlayman",
+      "i_decline": "\u274C Rad etaman",
+      "i_will_check_later": "\uD83D\uDC4D Keyinroq tekshiraman",
+      "not_confirmed": "<i>Ma'lumotlaringiz tasdiqlanmadi. Iltimos, quyidagi tugmalardan birini tanlang:</i>",
+      "i_confirmed": "<i>Xabar uchun rahmat! Ma'lumotlaringiz admin tomonidan ko'rib chiqiladi va sizga javob yuboriladi.</i>",
+      "i_declined": "<i>Dizayner bo'lish taklifi muvaffaiyatli bekor qilindi.</i>"
+    },
+    "back": "\u2B05\uFE0F Ortga"
+  },
+  "design": {
+    "add": {
+      "wizard": {
+        "title": "<b>Yangi dizayn qo'shish</b>",
+        "text": "<i>Yangi dizayn qo'shish uchun quyidagi ma'lumotlarni to'ldiring:</i>",
+        "name": {
+          "prompt": "<i>Dizayn nomini kiriting:</i>"
+        },
+        "description": {
+          "prompt": "<i>Dizayn haqida qisqacha ma'lumot kiriting:</i>"
+        },
+        "price": {
+          "prompt": "<i>Dizayn narxini kiriting:</i>"
+        },
+        "image": {
+          "prompt": "<i>Dizaynning rasmni yuboring:</i>"
+        },
+        "category": {
+          "prompt": "<i>Dizaynning kategoriyasini tanlang:</i>",
+          "not_found": "<i>Kategoriya topilmadi. Iltimos, boshqa kategoriyani tanlang.</i>",
+          "empty": "<i>Hozirda kategoriyalar mavjud emas. Iltimos, boshqa kategoriya qo'shilishini kuting.</i>"
+        },
+        "view": {
+          "new_design": "<b>Yangi dizayn</b>",
+          "tag_title": "<b>Sarlavha:</b>",
+          "tag_description": "<b>Tavsif:</b>",
+          "tag_price": "<b>Narxi:</b>",
+          "tag_category": "<b>Kategoriya:</b>",
+          "check_info": "<i>\uD83D\uDC64 Ma'lumotlarni ko'rib chiqing ularda xatolik yo'qmi?</i>",
+          "i_checked": "\u2705 Tekshirishni tugatdim",
+          "i_edit": "\uD83D\uDD27 Xatolikni tuzataman",
+          "i_deleted": "\uD83D\uDDD1 Bekor qilaman",
+          "confirmed": "<i>Dizayn muvaffaqiyatli qo'shildi. Bizning dizaynerlarimiz sizning dizayningizni ko'rib chiqishadi va sizga javob yuboradi.</i>",
+          "i_declined": "<i>Dizayn qo'shish imkoniyatini muvaffaqiyatli bekor qildingiz.</i>",
+          "design_approved": "<i>Dizayn muvaffaqiyatli qo'shildi. Bizning dizaynerlarimiz sizning dizayningizni ko'rib chiqishadi va sizga javob yuboradi.</i>",
+          "design_rejected": "<i>Dizayningiz muvaffaqiyatli bekor qilindi.</i>"
+        },
+        "confirmation": {
+          "text": "<i>Ma'lumotlaringizni tasdiqlang:</i>\n\n<b>Nomi:</b> <i>${name}</i>\n<b>Tavsifi:</b> <i>${description}</i>\n<b>Narxi:</b> <i>${price}</i>\n<b>Rasm:</b> <i>${image}</i>\n<b>Kategoriya:</b> <i>${category}</i>",
+          "i_confirm": "\u2705 Tasdiqlayman",
+          "i_decline": "\u274C Rad etaman",
+          "not_confirmed": "<i>Ma'lumotlaringiz tasdiqlanmadi. Iltimos, quyidagi tugmalardan birini tanlang:</i>",
+          "i_confirmed": "<i>Dizayn muvaffaqiyatli qo'shildi. Bizning dizaynerlarimiz sizning dizayningizni ko'rib chiqishadi va sizga javob yuboradi.</i>",
+          "i_declined": "<i>Dizayn qo'shish muvaffaqiyatli bekor qilindi.</i>"
+        }
+      },
+      "error": "<i>Dizayn qo'shishda xatolik yuz berdi. Iltimos, qaytadan urinib ko'ring.</i>"
+    }
+  },
+  "unknown_command": "<i>Noma'lum buyruq. Iltimos, quyidagi tugmalardan birini tanlang.</i>",
+  "pagination": {
+    "previous": "\u2B05\uFE0F Oldingisi",
+    "next": "\u27A1\uFE0F Keyingisi"
+  }
 }

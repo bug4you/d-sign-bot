@@ -1,4 +1,4 @@
-import {session, Telegraf} from "telegraf";
+import {Scenes, session, Telegraf} from "telegraf";
 import "dotenv/config";
 import "reflect-metadata";
 import TelegrafI18n from "telegraf-i18n";
@@ -6,15 +6,30 @@ import {AppDataSource} from "./data-source";
 import {UserService} from "./service/UserService";
 import consola from "consola";
 import {resolve} from "node:path";
-import {languageButtons, menuButtons} from "./utils/BotKeyboard";
+import {languageButtons, menuButtons, newDesignAdminConfirmationButtons} from "./utils/BotKeyboard";
 import {
-    cartAction,
+    addCategoryAction, addNewDesignAction, adminDesignerApprovalAction, adminDesignerDeclineAction,
+    cartAction, getCategoriesAction, getMyApprovedDesignsAction, handleDesignerApproval, pendingRequestsAction,
     profileAction, profileBotStatisticsAction,
-    profileInfoAction,
+    profileInfoAction, requestDesignerAction,
     shopAction,
     shopCategoriesAction,
-    startAction
+    startAction, viewDesignAction, viewNextDesignAction, viewPreviousDesignAction
 } from "./utils/BotActions";
+import {CategoryService} from "./service/CategoryService";
+import {
+    designerLastNameRequestScene,
+    designerNameRequestScene,
+    designerPassportRequestScene, designerPhoneRequestScene, designerRequestConfirmationScene
+} from "./wizard/DesignerRequestWizard";
+import {
+    newDesignCategoryScene,
+    newDesignConfirmationScene,
+    newDesignDescriptionScene, newDesignImageScene,
+    newDesignPriceScene,
+    newDesignTitleScene
+} from "./wizard/AddNewDesignWizard";
+import {DesignService} from "./service/DesignService";
 
 // Initialize TypeORM
 AppDataSource.initialize()
@@ -31,9 +46,13 @@ AppDataSource.initialize()
         });
 
         const userService = new UserService();
+        const categoryService = new CategoryService();
+        const designService = new DesignService();
 
         // @ts-ignore
         const bot = new Telegraf(process.env.BOT_TOKEN);
+        // @ts-ignore
+        const stage = new Scenes.Stage([designerNameRequestScene, designerLastNameRequestScene, designerPassportRequestScene, designerRequestConfirmationScene, designerPhoneRequestScene, newDesignTitleScene, newDesignPriceScene, newDesignConfirmationScene, newDesignDescriptionScene, newDesignImageScene, newDesignCategoryScene]);
 
         bot.use(session());
         bot.use(I18n.middleware());
@@ -72,12 +91,63 @@ AppDataSource.initialize()
             }
             return next();
         });
+        // @ts-ignore
+        bot.use(stage.middleware());
 
         bot.start(startAction);
+
+        bot.action(/approve_/, adminDesignerApprovalAction);
+        bot.action(/decline_/, adminDesignerDeclineAction);
+        bot.action("check_later", async (ctx) => {
+            try {
+                await ctx.deleteMessage();
+            } catch (e) {
+                // @ts-ignore
+                consola.error(e.message);
+            }
+        });
 
         bot.on("text", async (ctx) => {
             // @ts-ignore
             const i18n = ctx.i18n;
+            // @ts-ignore
+            if (ctx.session.awaitingCategoryName) {
+                consola.info("Category name is being awaited");
+                let text = ctx.message.text;
+                let isCategoryNameTaken = await categoryService.isCategoryNameTaken(text);
+                if (isCategoryNameTaken) {
+                    await ctx.replyWithHTML(i18n.t("profile.category.add.taken"));
+                    consola.warn("Category name is taken");
+                    return;
+                }
+                // @ts-ignore
+                await categoryService.createCategory({name_uz: text?.trim()});
+                // @ts-ignore
+                ctx.session.awaitingCategoryName = false;
+                await ctx.replyWithHTML(i18n.t("profile.category.add.success", {categoryName: text}));
+                consola.success("Category created successfully");
+                return;
+            }
+            // @ts-ignore
+            if (ctx.session.awaitingCategoryUpdate) {
+                consola.info("Category update is being awaited");
+                let text = ctx.message.text;
+                // @ts-ignore
+                let categoryId = ctx.session.awaitingCategoryUpdate.id;
+                let isCategoryNameTaken = await categoryService.isCategoryNameTaken(text);
+                if (isCategoryNameTaken) {
+                    await ctx.reply(i18n.t("profile.category.add.taken"));
+                    consola.warn("Category name is taken");
+                    return;
+                }
+                // @ts-ignore
+                await categoryService.updateCategory(categoryId, {name_uz: text?.trim()});
+                // @ts-ignore
+                ctx.session.awaitingCategoryUpdate = null;
+                await ctx.reply(i18n.t("profile.category.edit.success", {categoryName: text}));
+                consola.success("Category updated successfully");
+                return
+            }
             switch (ctx.message.text) {
                 case i18n.t("menu.services"):
                     await ctx.replyWithHTML(i18n.t("services"));
@@ -99,7 +169,7 @@ AppDataSource.initialize()
                     await ctx.replyWithHTML(i18n.t("settings"));
                     break;
                 case i18n.t("menu.help"):
-                    await ctx.replyWithHTML(i18n.t("help"));
+                    await ctx.replyWithHTML(i18n.t("help.title"));
                     break;
                 case i18n.t("menu.about"):
                     await ctx.replyWithHTML(i18n.t("about"));
@@ -111,15 +181,19 @@ AppDataSource.initialize()
                     await shopCategoriesAction(ctx);
                     break;
                 case i18n.t("shop.categories.add_category"):
-                    await ctx.replyWithHTML("Add category");
+                    await addCategoryAction(ctx, i18n);
                     // await ctx.replyWithHTML(i18n.t("shop.categories.add_category"));
                     break;
                 case i18n.t("shop.categories.edit_category"):
                     await ctx.replyWithHTML("Edit category");
+                    // TODO: Implement edit category action
                     // await ctx.replyWithHTML(i18n.t("shop.categories.edit_category"));
                     break;
                 case i18n.t("shop.categories.all_categories"):
-                    await ctx.replyWithHTML("All categories");
+                    await getCategoriesAction(ctx, i18n);
+                    break;
+                case i18n.t("shop.menu.products_view"):
+                    await viewDesignAction(ctx);
                     break;
                 case i18n.t("profile.menu.profile_info"):
                     let user = await userService.getUserByTelegramId(ctx.from.id);
@@ -128,8 +202,25 @@ AppDataSource.initialize()
                 case i18n.t("profile.menu.bot_statistics"):
                     await profileBotStatisticsAction(ctx);
                     break;
+                case i18n.t("profile.menu.being_designer"): {
+                    // @ts-ignore
+                    ctx.scene.enter("DesignerNameRequestScene");
+                    break;
+                }
+                case i18n.t("profile.menu.unapproved_designers"):
+                    await pendingRequestsAction(ctx);
+                    break;
+                case i18n.t("profile.menu.approved_designers"):
+                    await handleDesignerApproval(ctx);
+                    break;
+                case i18n.t("profile.menu.add_new_design"):
+                    await addNewDesignAction(ctx);
+                    break;
+                case i18n.t("profile.menu.me_approved_design"):
+                    await getMyApprovedDesignsAction(ctx);
+                    break;
                 default:
-                    await ctx.reply(i18n.t("unknown_command"));
+                    await ctx.replyWithHTML(i18n.t("unknown_command"), menuButtons(i18n));
                     break;
             }
         });
@@ -148,6 +239,123 @@ AppDataSource.initialize()
                 await ctx.deleteMessage();
                 await startAction(ctx);
             }
+        });
+
+
+        bot.action("confirm_new_design_in_wizard", async (ctx) => {
+            consola.info("Dizaynimni tasdiqlash uchun ishga tushdi");
+            // @ts-ignore
+            const i18n = ctx.i18n;
+            // @ts-ignore
+            const designService = new DesignService();
+            const userService = new UserService();
+            // Foydalanuvchi ma'lumotlarini olish
+            // @ts-ignore
+            const user = await userService.getUserByTelegramId(ctx.from.id);
+            // Dizayn ma'lumotlarini session'dan olish
+            // @ts-ignore
+            const newDesignData = ctx.session.newDesign;
+            let category = await categoryService.getCategoryById(newDesignData.category);
+
+            if (!user || !newDesignData || !category) {
+                await ctx.replyWithHTML(i18n.t("design.add.error"));
+                return;
+            }
+
+            try {
+                // Yangi dizaynni yaratish
+                // @ts-ignore
+                let createdDesign = await designService.createDesign(user, {
+                    title_uz: newDesignData.title,
+                    description_uz: newDesignData.description,
+                    image: newDesignData.image,
+                    price: newDesignData.price,
+                    category,
+                    status: 'pending'
+                });
+
+                await ctx.replyWithHTML(i18n.t("design.add.wizard.view.confirmed"), menuButtons(i18n));
+                // Admin uchun dizayn ma'lumotlarini yuborish
+                // @ts-ignore
+                await ctx.telegram.sendPhoto(process.env.BOT_ADMIN_ID, newDesignData.image, {
+                    caption: `${i18n.t("design.add.wizard.view.new_design")}\n\n${i18n.t("design.add.wizard.view.tag_title")} <i>${newDesignData.title}</i>\n${i18n.t("design.add.wizard.view.tag_description")} <i>${newDesignData.description}</i>\n${i18n.t("design.add.wizard.view.tag_price")} <i>${newDesignData.price}</i>`,
+                    parse_mode: "HTML",
+                    ...newDesignAdminConfirmationButtons(i18n, createdDesign.id)
+                });
+                await ctx.replyWithHTML(i18n.t("design.add.wizard.view.confirmed"), menuButtons(i18n));
+                await ctx.deleteMessage();
+            } catch (error) {
+                consola.error("Yangi dizayn yaratishda xatolik:", error);
+                await ctx.replyWithHTML(i18n.t("design.add.error"));
+            }
+
+            // @ts-ignore
+            ctx.scene.leave();
+        });
+
+        bot.action("decline_new_design_in_wizard", async (ctx) => {
+            consola.warn("Yangi dizayn rad etish uchun ishga tushdi");
+            // @ts-ignore
+            const i18n = ctx.i18n;
+            // @ts-ignore
+            const newDesignData = ctx.session.newDesign;
+            if (newDesignData) {
+                await ctx.replyWithHTML(i18n.t("design.add.wizard.view.design_rejected"), menuButtons(i18n));
+                // @ts-ignore
+                ctx.session.newDesign = null;
+                await ctx.deleteMessage();
+            }
+            // @ts-ignore
+            ctx.scene.leave();
+        });
+
+
+        // Admin dizayner so'rovlarni ko'rish va tasdiqlashi uchun
+        bot.action(/confirm_new_design_/i, async (ctx) => {
+            // @ts-ignore
+            let splitElementId = ctx.callbackQuery.data.split("_")[3];
+            let design = await designService.getDesignById(splitElementId);
+            if (design) {
+                let data = await designService.updateDesignStatus(splitElementId, "approved");
+                await ctx.replyWithHTML("✔ Dizayn tasdiqlandi.");
+                await ctx.answerCbQuery("✔ Dizayn tasdiqlandi.");
+                try {
+                    // @ts-ignore
+                    await ctx.telegram.sendMessage(design.designer.telegram_id, "Sizning dizayningiz tasdiqlandi.", menuButtons(ctx.i18n));
+                    await ctx.deleteMessage();
+                } catch (e) {
+                    // @ts-ignore
+                    consola.error(e.message);
+                }
+            }
+        });
+
+        // Admin dizayner so'rovlarni ko'rish va rad etish uchun
+        bot.action(/decline_new_design_/i, async (ctx) => {
+            consola.warn("Admin dizayner so'rovlarni rad etish uchun ishga tushdi");
+            // @ts-ignore
+            let splitElementId = ctx.callbackQuery.data.split("_")[3];
+            let design = await designService.getDesignById(parseInt(splitElementId));
+            await designService.updateDesignStatus(parseInt(splitElementId), "rejected");
+            await ctx.replyWithHTML("❌ Dizayn rad etildi.");
+            await ctx.answerCbQuery("❌ Dizayn rad etildi.");
+            try {
+                // @ts-ignore
+                await ctx.telegram.sendMessage(design.designer.telegram_id, ctx.i18n.t("design.add.wizard.view.design_rejected"), menuButtons(ctx.i18n));
+                await ctx.deleteMessage();
+            } catch (e) {
+                // @ts-ignore
+                consola.error(e.message);
+            }
+        });
+
+        bot.action(/next_page_/i, viewNextDesignAction);
+        bot.action(/previous_page_/i, viewPreviousDesignAction);
+        bot.action("do_nothing", async (ctx) => {
+            await ctx.answerCbQuery("Do nothing");
+        });
+        bot.action(/add_to_cart_/i, async (ctx) => {
+            //
         });
 
         bot.catch((error): void => {

@@ -13,6 +13,9 @@ export class DesignerRequest {
     @Column({nullable: true})
     bio!: string;
 
+    @Column({nullable: true})
+    passport!: string;
+
     @Column({default: 'pending'})
     status!: string;
 

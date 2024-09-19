@@ -14,7 +14,7 @@ export class UserService {
         return this.userRepository.save(user);
     }
 
-    async getUserById(id: number): Promise<User | null> {
+    async getUserById(id: number | undefined): Promise<User | null> {
         return this.userRepository.findOneBy({id});
     }
 
@@ -22,7 +22,8 @@ export class UserService {
         return this.userRepository.find();
     }
 
-    async updateUser(id: number, data: Partial<User>): Promise<User | null> {
+    async updateUser(id: number | undefined, data: Partial<User>): Promise<User | null> {
+        // @ts-ignore
         await this.userRepository.update(id, data);
         return this.getUserById(id);
     }
@@ -55,6 +56,6 @@ export class UserService {
 
     // Dizaynerlar sonini olish
     async getDesignerCount(): Promise<number> {
-        return this.userRepository.count({ where: { role: 'designer' } });
+        return this.userRepository.count({where: {role: 'designer'}});
     }
 }

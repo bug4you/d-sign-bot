@@ -1,38 +1,44 @@
-// src/entity/User.ts
-import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn} from "typeorm";
+import {Design} from "./Design";
 
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column()
-    first_name: string = '';
-
-    @Column({nullable: true})
-    last_name: string = '';
-
-    @Column({nullable: true})
-    username: string = '';
-
-    @Column()
-    phone: string = '';
-
     @Column({unique: true})
-    telegram_id: string = '';
+    telegram_id!: string;
 
-    @Column({default: 'user'})
-    role: string = 'user';
+    @Column()
+    first_name!: string;
+
+    @Column({nullable: true})
+    last_name?: string = '';
+
+    @Column({nullable: true})
+    username?: string = '';
+
+    @Column({nullable: true})
+    phone?: string = '';
+
+    @Column({nullable: false})
+    role: string | 'user' | 'admin' = 'user';
 
     @Column({default: 'uz'})
-    language: string = 'uz';
+    language!: string;
 
-    @Column({default: 0})
-    is_designer: boolean = false;
+    @Column({default: false})
+    is_designer!: boolean;
 
+    // Dizaynlar bilan bog'lash
+    @OneToMany(() => Design, (design) => design.designer)
+    designs!: Design[];
+
+    @Column({nullable: true, update: false})
     @CreateDateColumn()
-    created_at: Date = new Date();
+    created_at?: Date;
 
-    @UpdateDateColumn({nullable: true})
-    updated_at: Date = new Date();
+    @Column({nullable: true})
+    @UpdateDateColumn()
+    updated_at?: Date;
 }
