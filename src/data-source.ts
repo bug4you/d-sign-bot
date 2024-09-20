@@ -22,5 +22,5 @@ export const AppDataSource = new DataSource({
         UserLanguage,
     ],
     synchronize: true,
-    logging: true,
+    logging: false,
 });
