@@ -63,6 +63,10 @@ export const cartButtons = (i18n: any) => {
     ]).reply();
 }
 
+/**
+ * Shop menu buttons
+ * @param i18n
+ * */
 export const shopMenuButtons = (i18n: any) => {
     return Keyboard.make([
         [i18n.t("shop.menu.products_view")],
@@ -73,6 +77,33 @@ export const shopMenuButtons = (i18n: any) => {
     ]).reply();
 };
 
+export const shopMenuOnlyUserButtons = (i18n: any) => {
+    return Keyboard.make([
+        [i18n.t("shop.menu.products_view")],
+        [i18n.t("shop.menu.search_with_category")],
+        [i18n.t("shop.menu.my_active_orders")],
+        [i18n.t("shop.menu.completed_orders")],
+        [i18n.t("menu.back_to_menu")]
+    ]).reply();
+};
+
+export const searchWithCategoryButtons = (i18n: any, categories: Category[]) => {
+    return Keyboard.make(categories.map((category: Category) => {
+        return [
+            {
+                text: category.name_uz,
+                callback_data: `with_category_${category.id}`
+            }
+        ];
+    }), {
+        columns: 2
+    }).inline();
+}
+
+/**
+ * Shop categories buttons
+ * @param i18n
+ * */
 export const shopCategoriesButtons = (i18n: any) => {
     return Keyboard.make([
         [i18n.t("shop.categories.add_category")],
@@ -173,21 +204,35 @@ export const designerConfirmationAdminButtons = (i18n: any, design_id: number | 
     ]).inline();
 };
 
-export const designPaginationButtons = (i18n: any, page: number, total: number, design_id: number | string) => {
-    consola.success(`Page: ${page}, Total: ${total}`);
+export const designPaginationButtons = (
+    i18n: any,
+    offset: number,
+    total: number,
+    design_id: number | string,
+    isCategory = false,
+    category_id?: number
+) => {
+    let nextCallback = isCategory
+        ? `next_page_category_${category_id}_${offset}`
+        : `next_page_${offset}`;
+
+    let previousCallback = isCategory
+        ? `previous_page_category_${category_id}_${offset}`
+        : `previous_page_${offset}`;
+
     return Keyboard.make([
         [
             {
                 text: i18n.t("pagination.previous"),
-                callback_data: `previous_page_${page - 1}`
+                callback_data: offset > 0 ? previousCallback : "do_nothing" // Disable if no previous page
             },
             {
-                text: `${page + 1}/${total}`,
-                callback_data: "do_nothing"
+                text: `${offset + 1}/${total}`,
+                callback_data: "do_nothing" // No action on clicking page display
             },
             {
                 text: i18n.t("pagination.next"),
-                callback_data: `next_page_${page + 1}`
+                callback_data: offset < total - 1 ? nextCallback : "do_nothing" // Disable if no next page
             }
         ],
         [
@@ -203,4 +248,5 @@ export const designPaginationButtons = (i18n: any, page: number, total: number, 
             }
         ]
     ]).inline();
-}
+};
+

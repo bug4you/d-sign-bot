@@ -1,13 +1,15 @@
 // src/entity/Order.ts
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn } from "typeorm";
-import { User } from "./User";
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, UpdateDateColumn} from "typeorm";
+import {User} from "./User";
+
+export type OrderStatus = 'pending' | 'completed' | 'canceled' | 'processing' | string;
 
 @Entity()
 export class Order {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @ManyToOne(() => User, { eager: true })
+    @ManyToOne(() => User, {eager: true})
     user!: User;
 
     @Column()
@@ -16,12 +18,12 @@ export class Order {
     @Column()
     phone: string = '';
 
-    @Column({ default: 'pending' })
-    status: string = 'pending';
+    @Column({default: 'pending'})
+    status: OrderStatus = 'pending';
 
     @CreateDateColumn()
     created_at: Date = new Date();
 
-    @UpdateDateColumn({ nullable: true })
+    @UpdateDateColumn({nullable: true})
     updated_at: Date = new Date();
 }

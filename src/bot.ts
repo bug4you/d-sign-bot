@@ -14,21 +14,28 @@ import {
     adminDesignerApprovalAction,
     adminDesignerDeclineAction,
     backToShopMenuAction,
-    cartAction, clearCartAction,
+    cartAction,
+    clearCartAction,
     getCategoriesAction,
     getMyApprovedDesignsAction,
     handleDesignerApproval,
     pendingRequestsAction,
     profileAction,
     profileBotStatisticsAction,
-    profileInfoAction, removeFromCartAction,
+    profileInfoAction,
+    removeFromCartAction,
     requestDesignerAction,
-    shopAction,
+    shopMenuAction,
     shopCategoriesAction,
+    shopMyActiveOrdersAction,
+    shopMyCompletedOrdersAction,
     startAction,
     viewDesignAction,
     viewNextDesignAction,
-    viewPreviousDesignAction
+    viewPreviousDesignAction,
+    viewDesignAllCategoryAction,
+    viewDesignWithCategoryAction,
+    viewNextDesignWithCategoryAction, viewPreviousDesignWithCategoryAction, getMyPendingDesignsAction
 } from "./utils/BotActions";
 import {CategoryService} from "./service/CategoryService";
 import {
@@ -44,6 +51,8 @@ import {
     newDesignTitleScene
 } from "./wizard/AddNewDesignWizard";
 import {DesignService} from "./service/DesignService";
+import {CartService} from "./service/CartService";
+import {userRegisterFirstName, userRegisterLastName, userRegisterPhone} from "./wizard/OrderRegisterWizard";
 
 // Initialize TypeORM
 AppDataSource.initialize()
@@ -62,11 +71,12 @@ AppDataSource.initialize()
         const userService = new UserService();
         const categoryService = new CategoryService();
         const designService = new DesignService();
+        const cartService = new CartService();
 
         // @ts-ignore
         const bot = new Telegraf(process.env.BOT_TOKEN);
         // @ts-ignore
-        const stage = new Scenes.Stage([designerNameRequestScene, designerLastNameRequestScene, designerPassportRequestScene, designerRequestConfirmationScene, designerPhoneRequestScene, newDesignTitleScene, newDesignPriceScene, newDesignConfirmationScene, newDesignDescriptionScene, newDesignImageScene, newDesignCategoryScene]);
+        const stage = new Scenes.Stage([designerNameRequestScene, designerLastNameRequestScene, designerPassportRequestScene, designerRequestConfirmationScene, designerPhoneRequestScene, newDesignTitleScene, newDesignPriceScene, newDesignConfirmationScene, newDesignDescriptionScene, newDesignImageScene, newDesignCategoryScene, userRegisterFirstName, userRegisterLastName, userRegisterPhone]);
 
         bot.use(session());
         bot.use(I18n.middleware());
@@ -127,12 +137,10 @@ AppDataSource.initialize()
             const i18n = ctx.i18n;
             // @ts-ignore
             if (ctx.session.awaitingCategoryName) {
-                consola.info("Category name is being awaited");
                 let text = ctx.message.text;
                 let isCategoryNameTaken = await categoryService.isCategoryNameTaken(text);
                 if (isCategoryNameTaken) {
                     await ctx.replyWithHTML(i18n.t("profile.category.add.taken"));
-                    consola.warn("Category name is taken");
                     return;
                 }
                 // @ts-ignore
@@ -145,14 +153,12 @@ AppDataSource.initialize()
             }
             // @ts-ignore
             if (ctx.session.awaitingCategoryUpdate) {
-                consola.info("Category update is being awaited");
                 let text = ctx.message.text;
                 // @ts-ignore
                 let categoryId = ctx.session.awaitingCategoryUpdate.id;
                 let isCategoryNameTaken = await categoryService.isCategoryNameTaken(text);
                 if (isCategoryNameTaken) {
                     await ctx.reply(i18n.t("profile.category.add.taken"));
-                    consola.warn("Category name is taken");
                     return;
                 }
                 // @ts-ignore
@@ -169,7 +175,7 @@ AppDataSource.initialize()
                     break;
                 case i18n.t("menu.shop"):
                 case i18n.t("shop.categories.back_to_shop_menu"):
-                    await shopAction(ctx);
+                    await shopMenuAction(ctx);
                     break;
                 case i18n.t("menu.profile"):
                     await profileAction(ctx);
@@ -187,7 +193,7 @@ AppDataSource.initialize()
                     await ctx.replyWithHTML(i18n.t("help.title"));
                     break;
                 case i18n.t("menu.about"):
-                    await ctx.replyWithHTML(i18n.t("about"));
+                    await ctx.replyWithHTML(i18n.t("about.text"));
                     break;
                 case i18n.t("menu.back_to_menu"):
                     await startAction(ctx);
@@ -209,6 +215,18 @@ AppDataSource.initialize()
                     break;
                 case i18n.t("shop.menu.products_view"):
                     await viewDesignAction(ctx);
+                    break;
+                // Mening buyurtmalarim("active", "pending")
+                case i18n.t("shop.menu.my_active_orders"):
+                    await shopMyActiveOrdersAction(ctx);
+                    break;
+                // Mening buyurtmalarim("completed")
+                case i18n.t("shop.menu.my_completed_orders"):
+                    await shopMyCompletedOrdersAction(ctx);
+                    break;
+                // Barcha dizaynlar ro'yxatini olishi uchun kategiyalar orqali qidirish
+                case i18n.t("shop.menu.search_with_category"):
+                    await viewDesignAllCategoryAction(ctx);
                     break;
                 case i18n.t("profile.menu.profile_info"):
                     let user = await userService.getUserByTelegramId(ctx.from.id);
@@ -233,6 +251,9 @@ AppDataSource.initialize()
                     break;
                 case i18n.t("profile.menu.me_approved_design"):
                     await getMyApprovedDesignsAction(ctx);
+                    break;
+                case i18n.t("profile.menu.me_not_approved_design"):
+                    await getMyPendingDesignsAction(ctx);
                     break;
                 case i18n.t("cart.clear"):
                     await clearCartAction(ctx);
@@ -259,7 +280,6 @@ AppDataSource.initialize()
             }
         });
 
-
         bot.action("confirm_new_design_in_wizard", async (ctx) => {
             consola.info("Dizaynimni tasdiqlash uchun ishga tushdi");
             // @ts-ignore
@@ -273,13 +293,14 @@ AppDataSource.initialize()
             // Dizayn ma'lumotlarini session'dan olish
             // @ts-ignore
             const newDesignData = ctx.session.newDesign;
-            let category = await categoryService.getCategoryById(newDesignData.category);
+            let category = await categoryService.getCategoryById(newDesignData.categoryId);
 
             if (!user || !newDesignData || !category) {
                 await ctx.replyWithHTML(i18n.t("design.add.error"));
                 return;
             }
-
+            console.clear();
+            consola.box(category);
             try {
                 // Yangi dizaynni yaratish
                 // @ts-ignore
@@ -327,7 +348,6 @@ AppDataSource.initialize()
             ctx.scene.leave();
         });
 
-
         // Admin dizayner so'rovlarni ko'rish va tasdiqlashi uchun
         bot.action(/confirm_new_design_/i, async (ctx) => {
             // @ts-ignore
@@ -367,14 +387,41 @@ AppDataSource.initialize()
             }
         });
 
-        bot.action(/next_page_/i, viewNextDesignAction);
-        bot.action(/previous_page_/i, viewPreviousDesignAction);
+        // Without category (standard design navigation)
+        bot.action(/next_page_(\d+)/i, viewNextDesignAction);
+        bot.action(/previous_page_(\d+)/i, viewPreviousDesignAction);
+
+// With category (category-based design navigation)
+        bot.action(/next_page_category_(\d+)_(\d+)/i, viewNextDesignWithCategoryAction);
+        bot.action(/previous_page_category_(\d+)_(\d+)/i, viewPreviousDesignWithCategoryAction);
+
         bot.action("do_nothing", async (ctx) => {
             await ctx.answerCbQuery("Do nothing");
         });
+
+        bot.action(/with_category_([0-9]+)/, async (ctx) => {
+            // @ts-ignore
+            await viewDesignWithCategoryAction(ctx);
+        });
+
         bot.action(/add_to_cart_([0-9]+)/, addToCartAction);
         bot.action("back_to_shop_menu", backToShopMenuAction);
         bot.action("clear_cart", clearCartAction);
+
+        bot.action("checkout", async (ctx) => {
+            const userId = ctx.from.id;
+
+            let cartItems = await cartService.getUserCart(userId.toString());
+            if (cartItems.length === 0) {
+                // @ts-ignore
+                await ctx.replyWithHTML(ctx.i18n.t("cart.empty"), menuButtons(ctx.i18n));
+                return;
+            }
+            console.clear();
+            // @ts-ignore
+            ctx.scene.enter("userRegisterFirstName");
+        });
+
         bot.catch((error): void => {
             consola.error(error);
         });

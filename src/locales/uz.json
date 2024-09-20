@@ -29,7 +29,9 @@
       "products_view": "\uD83D\uDECD Maxsulotlarni ko'rish",
       "search_with_category": "\uD83D\uDD0D Kategoriyalar bo'yicha qidirish",
       "active_orders": "\uD83D\uDCC4 Aktiv buyurtmalar",
-      "completed_orders": "\uD83D\uDCC5 Yakunlangan buyurtmalar"
+      "my_active_orders": "\uD83D\uDCC4 Mening aktiv buyurtmalarim",
+      "completed_orders": "\uD83D\uDCC5 Yakunlangan buyurtmalar",
+      "my_completed_orders": "\uD83D\uDCC5 Yakunlangan buyurtmalar"
     },
     "product_view": {
       "welcome": "<b>Do'konimizga xush kelibsiz!</b>\n\n<i>Quyidagi dizaynlardan birini tanlang:</i>",
@@ -39,6 +41,15 @@
       "product": {
         "text": "<b>\uD83C\uDF81 Maxsulot:</b>\n<i>Quyidagi ma'lumotlar sizning tanlagan maxsulot bo'yicha:</i>\n\n<b>\uD83C\uDF81 Nomi:</b> <i>${title}</i>\n<b>\uD83C\uDF81 Tavsifi:</b> <i>${description}</i>\n<b>\uD83C\uDF81 Narxi:</b> <i>${price}</i>\n<b>\uD83C\uDF81 Kategoriya:</b> <i>${category}</i>",
         "add_to_cart": "\uD83D\uDECD Savatchaga qo'shish \uD83D\uDECD"
+      },
+      "product_not_found": "<i>Maxsulot topilmadi. Iltimos, boshqa maxsulot tanlang.</i>",
+      "search_with_category": {
+        "title": "<b>Kategoriyalar bo'yicha qidirish</b>",
+        "empty": "<i>Hozirda kategoriyalar mavjud emas. Iltimos, boshqa kategoriya qidirishini kuting.</i>",
+        "category": {
+          "text": "<b>\uD83D\uDCD2 Kategoriya:</b>\n<i>Quyidagi kategoriyalar bo'yicha dizaynlarni osonlik bilan izlashingiz mumkin:</i>",
+          "back_to_shop_menu": "\uD83D\uDECD Do'konga qaytish"
+        }
       }
     },
     "categories": {
@@ -144,7 +155,8 @@
     }
   },
   "about": {
-    "title": "<b>Biz haqimizda</b>"
+    "title": "<b>Biz haqimizda</b>",
+    "text": "<b>D-sign</b> ga xush kelibsiz! Biz ijodkorlarga o‘z dizaynlarini mahsulotlarda namoyon etish imkoniyatini beramiz, shuningdek, individual mijozlar va kompaniyalar uchun original dizaynli maxsus mahsulotlar taqdim etamiz. Noyob sovg‘alar yoki brendlangan korporativ buyurtmalar uchun biz bilan bog’laning!"
   },
   "contact": {
     "title": "<b>Aloqa</b>",
@@ -238,5 +250,40 @@
   "pagination": {
     "previous": "\u2B05\uFE0F Oldingisi",
     "next": "\u27A1\uFE0F Keyingisi"
+  },
+  "order": {
+    "user": {
+      "my_active_orders": {
+        "title": "<b>Mening aktiv buyurtmalarim</b>",
+        "empty": "<i>Sizning aktiv buyurtmalar ro'yxatingiz bo'sh.</i>",
+        "order": {
+          "text": "<b>\uD83D\uDCC4 Buyurtma:</b>\n<i>Quyidagi ma'lumotlar sizning tanlagan buyurtmalaringiz bo'yicha:</i>${result}",
+          "item": {
+            "title": "<b>\uD83C\uDF81 Maxsulot:</b>",
+            "name": "<b>Nomi:</b> <i>${title}</i>",
+            "price": "<b>Narxi:</b> <i>${price}</i>",
+            "quantity": "<b>Soni:</b> <i>${quantity}</i>",
+            "total": "<b>Jami:</b> <i>${total}</i>",
+            "result": "\n\n<b>\uD83C\uDD94:</b> <i>${id}</i>\n<b>\uD83C\uDFF7 Maxsulot:</b> <i>${title}</i>\n<b>\uD83D\uDCB5 Narxi:</b> <i>${price}</i>\n<b>\uD83D\uDCC5 Buyurtma sanasi:</b> <i>${created_at}</i>\n<b>\uD83D\uDD04 Buyurtma holati:</b> <i>${status === 'pending' ? 'Kutilmoqda':status === 'processing'?'Jarayonda':'Boshqa'}</i>"
+          },
+          "cancel": "\uD83D\uDDD1 Buyurtmani bekor qilish \uD83D\uDDD1"
+        }
+      },
+      "my_completed_orders": {
+        "title": "<b>Mening yakunlangan buyurtmalarim</b>",
+        "empty": "<i>Sizning yakunlangan buyurtmalar ro'yxatingiz bo'sh.</i>",
+        "order": {
+          "text": "<b>\uD83D\uDCC5 Buyurtma:</b>\n<i>Quyidagi ma'lumotlar sizning tanlagan buyurtmalaringiz bo'yicha:</i>\n\n${result}",
+          "item": {
+            "title": "<b>\uD83C\uDF81 Maxsulot:</b>",
+            "name": "<b>Nomi:</b> <i>${title}</i>",
+            "price": "<b>Narxi:</b> <i>${price}</i>",
+            "quantity": "<b>Soni:</b> <i>${quantity}</i>",
+            "total": "<b>Jami:</b> <i>${total}</i>",
+            "result": "<b>\uD83D\uDCC5 ID:</b> <i>${id}</i>\n<b>\uD83D\uDCC5 Maxsulot:</b> <i>${title}</i>\n<b>\uD83D\uDCC5 Narxi:</b> <i>${price}</i>\n<b>\uD83D\uDCC5 Buyurtma sanasi:</b> <i>${created_at}</i>\n<b>\uD83D\uDCC5 Buyurtma holati:</b> <i>${status === 'completed' ? 'Yakunlandi ✔':status === 'canceled' ? 'Bekor qilingan ✖':'Boshqa'}</i>"
+          }
+        }
+      }
+    }
   }
 }

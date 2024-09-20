@@ -2,9 +2,9 @@ import {
     adminProfileButtons,
     designerProfileButtons,
     designPaginationButtons,
-    menuButtons,
+    menuButtons, searchWithCategoryButtons,
     shopCategoriesButtons,
-    shopMenuButtons,
+    shopMenuButtons, shopMenuOnlyUserButtons,
     userProfileButtons
 } from "./BotKeyboard";
 import {CartService} from "../service/CartService";
@@ -15,11 +15,17 @@ import {DesignerRequestService} from "../service/DesignerRequestService";
 import {UserService} from "../service/UserService";
 import {Design} from "../entity/Design";
 import {DesignService} from "../service/DesignService";
+import {OrderService} from "../service/OrderService";
+import {OrderItemService} from "../service/OrderItemService";
+import {Category} from "../entity/Category";
 
 const designerRequestService = new DesignerRequestService();
 const userService = new UserService();
 const designService = new DesignService();
 const cartService = new CartService();
+const orderService = new OrderService();
+const orderItemService = new OrderItemService();
+const categoryService = new CategoryService();
 
 export const startAction = async (ctx: any): Promise<void> => {
     // @ts-ignore
@@ -50,7 +56,10 @@ export const cartAction = async (ctx: any): Promise<void> => {
         });
     });
 
-    let message = await ctx.replyWithHTML(i18n.t("cart.text", {products: fullTextResponse, cartProductSize: userCart.length}), {
+    let message = await ctx.replyWithHTML(i18n.t("cart.text", {
+        products: fullTextResponse,
+        cartProductSize: userCart.length
+    }), {
         reply_markup: {
             inline_keyboard: [
                 [{text: i18n.t("cart.checkout"), callback_data: "checkout"}],
@@ -96,14 +105,104 @@ export const removeFromCartAction = async (ctx: any): Promise<void> => {
     }
 };
 
-export const shopAction = async (ctx: any): Promise<void> => {
+export const shopMenuAction = async (ctx: any): Promise<void> => {
     // @ts-ignore
     const i18n = ctx.i18n;
-    await ctx.replyWithHTML(i18n.t("shop.menu.title"), shopMenuButtons(i18n));
+    await ctx.replyWithHTML(i18n.t("shop.menu.title"), ctx.session.role !== "admin" ? shopMenuOnlyUserButtons(i18n) : shopMenuButtons(i18n));
 };
 
 export const shopProductsAction = async (ctx: any): Promise<void> => {
 };
+
+export const shopMyActiveOrdersAction = async (ctx: any): Promise<void> => {
+    let userID = ctx.from.id;
+    let user = await userService.getUserByTelegramId(userID.toString());
+    if (!user) {
+        return ctx.reply("Foydalanuvchi topilmadi.");
+    }
+    let i18n = ctx.i18n;
+    let orders = await orderService.getUserOrders(user.id);
+    if (orders.length === 0) {
+        await ctx.reply(i18n.t("order.user.my_active_orders.empty"));
+        return;
+    }
+    let text = "";
+    let orderItems = await orderItemService.getOrderItemsByUser(user.id);
+    orderItems.forEach((orderItem, index) => {
+        const orderDate = new Date(orderItem.order.created_at);
+        const formattedDate = orderDate.toLocaleDateString("uz-UZ", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+        text += i18n.t("order.user.my_active_orders.order.item.result", {
+            id: orderItem.id,
+            title: orderItem.design.title_uz,
+            price: orderItem.design.price,
+            quantity: orderItem.quantity,
+            created_at: formattedDate,
+            status: orderItem.order.status
+        });
+    });
+    consola.success("My active orders:..............................................");
+    await ctx.replyWithHTML(i18n.t("order.user.my_active_orders.order.text", {
+        result: text
+    }));
+
+    consola.box(i18n.t("order.user.my_active_orders.order.text", {
+        result: text
+    }));
+}
+
+export const shopMyCompletedOrdersAction = async (ctx: any): Promise<void> => {
+    let userID = ctx.from.id;
+    let user = await userService.getUserByTelegramId(userID.toString());
+    if (!user) {
+        return ctx.reply("Foydalanuvchi topilmadi.");
+    }
+    let i18n = ctx.i18n;
+    let orders = await orderService.getUserOrders(user.id);
+    let filteredOrders = orders.filter(order => order.status === "completed" || order.status === "canceled");
+
+    if (filteredOrders.length === 0) {
+        await ctx.replyWithHTML(i18n.t("order.user.my_completed_orders.empty"));
+        return;
+    }
+
+    let text = "";
+    let orderItems = await orderItemService.getOrderItemByUserAndOrderStatus(user.id, "completed", "canceled");
+    consola.box(orderItems[0]);
+
+    orderItems.forEach((orderItem) => {
+        const orderDate = new Date(orderItem.order.created_at);
+        const formattedDate = orderDate.toLocaleDateString("uz-UZ", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+        text += i18n.t("order.user.my_completed_orders.order.item.result", {
+            id: orderItem.id,
+            title: orderItem.design.title_uz,
+            price: orderItem.design.price,
+            quantity: orderItem.quantity,
+            created_at: formattedDate,
+            status: orderItem.order.status
+        });
+    });
+
+    consola.success("My completed orders:..............................................");
+    await ctx.replyWithHTML(i18n.t("order.user.my_completed_orders.order.text", {
+        result: text
+    }));
+
+    consola.box(i18n.t("order.user.my_completed_orders.order.text", {
+        result: text
+    }));
+}
 
 export const shopCartAction = async (ctx: any): Promise<void> => {
 };
@@ -145,6 +244,12 @@ export const profileAction = async (ctx: any): Promise<void> => {
     await ctx.replyWithHTML(i18n.t("profile.menu.title"), profileButtons);
 }
 
+/**
+ * Shaxsiy ma'lumotlarni ko'rish uchun ishga tushdi
+ * @param ctx
+ * @param user
+ * @returns {Promise<void>}
+ * */
 export const profileInfoAction = async (ctx: any, user: User | null): Promise<void> => {
     const i18n = ctx.i18n;
     consola.box(user);
@@ -157,6 +262,11 @@ export const profileInfoAction = async (ctx: any, user: User | null): Promise<vo
     }));
 };
 
+/**
+ * Bot statistikasini ko'rish uchun ishga tushdi
+ * @param ctx
+ * @returns {Promise<void>}
+ * */
 export const profileBotStatisticsAction = async (ctx: any): Promise<void> => {
     const i18n = ctx.i18n;
     // const userCount = await userService.getUserCount();
@@ -264,11 +374,14 @@ export const addNewDesignAction = async (ctx: any): Promise<void> => {
     ctx.scene.enter("newDesignTitleScene");
 }
 
+// Aynan joriy foydalanuvchi uchun tasdiqlangan dizaynlarni ko'rish uchun ishga tushdi
 export const getMyApprovedDesignsAction = async (ctx: any): Promise<void> => {
     const userId = ctx.from.id;
     const user = await userService.getUserByTelegramId(userId.toString());
     if (user) {
-        const designs = await designService.getDesignsByDesigner(user);
+        const designs = await designService.getUserApprovedDesigns(user.id);
+        console.clear();
+        consola.box(designs);
         if (designs.length > 0) {
             let text = "<b>Sizning tasdiqlangan dizaynlaringiz:</b>";
             designs.forEach((design: Design, index: number) => {
@@ -276,27 +389,67 @@ export const getMyApprovedDesignsAction = async (ctx: any): Promise<void> => {
             });
             await ctx.replyWithHTML(text);
         } else {
-            await ctx.reply("<i>Sizning tasdiqlangan dizaynlaringiz yo'q.</i>");
+            await ctx.replyWithHTML("<i>Sizning tasdiqlangan dizaynlaringiz yo'q.</i>");
         }
     } else {
         await ctx.reply("<i>Foydalanuvchi topilmadi.</i>");
     }
 };
 
-export const viewDesignAction = async (ctx: any): Promise<void> => {
-    let offset = 0;
-    let designs = await designService.getApprovedDesignsPaginated(1, offset);
+export const getMyPendingDesignsAction = async (ctx: any): Promise<void> => {
+    const userId = ctx.from.id;
+    const user = await userService.getUserByTelegramId(userId.toString());
+    if (user) {
+        const designs = await designService.getUserPendingDesigns(user.id);
+        console.clear();
+        consola.box(designs);
+        if (designs.length > 0) {
+            let text = "<b>Sizning tasdiqlanmagan dizaynlaringiz:</b>";
+            designs.forEach((design: Design, index: number) => {
+                text += `\n${index + 1}. ${design.title_uz}  <i>/view_${design.id}</i>`;
+            });
+            await ctx.replyWithHTML(text);
+        } else {
+            await ctx.replyWithHTML("<i>Sizning tasdiqlanmagan dizaynlaringiz yo'q.</i>");
+        }
+    } else {
+        await ctx.reply("<i>Foydalanuvchi topilmadi.</i>");
+    }
+};
+
+// Dizayn ko'rish uchun ishga tushdi(SHOP)
+export const viewDesignWithCategoryAction = async (ctx: any): Promise<void> => {
+    const categoryId = parseInt(ctx.match[1]);
+    consola.box(categoryId);
+
+    // Set initial offset for the category in session
+    let offset = ctx.session.offset_for_category || 0;
+
+    // Fetch the category and validate
+    let category = await categoryService.getCategoryById(categoryId) as Category;
+    if (!category) {
+        await ctx.replyWithHTML("Kategoriya topilmadi.");
+        return;
+    }
+
+    // Fetch designs based on the category with pagination
+    let designs = await designService.getDesignsByCategoryWithPaginated(category, offset, 1);
+
     const i18n = ctx.i18n;
     if (designs.length === 0) {
         await ctx.replyWithHTML(i18n.t("shop.product_view.empty"));
         return;
     }
-    const countOnlyApprovedDesigns = await designService.getCountOfApprovedDesigns();
+
+    // Fetch the total number of approved designs in this category
+    const countOnlyApprovedDesignsWithCategory = await designService.getCountOfDesignsByCategory(category);
+
+    // Welcome message
     await ctx.replyWithHTML(i18n.t("shop.product_view.welcome"), {
-        reply_markup: {
-            remove_keyboard: true
-        }
+        reply_markup: {remove_keyboard: true}
     });
+
+    // Show the first design
     await ctx.replyWithPhoto(designs[0].image, {
         caption: i18n.t("shop.product_view.product.text", {
             title: designs[0].title_uz,
@@ -305,57 +458,201 @@ export const viewDesignAction = async (ctx: any): Promise<void> => {
             category: designs[0].category.name_uz
         }),
         parse_mode: "HTML",
-        ...designPaginationButtons(i18n, offset, countOnlyApprovedDesigns, designs[0].id)
+        ...designPaginationButtons(i18n, offset, countOnlyApprovedDesignsWithCategory, designs[0].id)
+    });
+
+    // Delete the previous message
+    await deleteMessage(ctx);
+};
+
+// Keyingi dizaynni ko'rish uchun ishga tushdi(SHOP)
+export const viewNextDesignWithCategoryAction = async (ctx: any): Promise<void> => {
+    const match = ctx.match; // Extract the matched parts
+    const categoryId = parseInt(match[1], 10); // Extract category ID
+    let offset = parseInt(match[2], 10); // Extract current offset
+
+    offset++; // Increment the offset for the next page
+
+    // Fetch designs by category with pagination
+    // @ts-ignore
+    const designs = await designService.getDesignsByCategoryWithPaginated(categoryId, offset, 1);
+    // @ts-ignore
+    const totalDesigns = await designService.getCountOfDesignsByCategory(categoryId);
+
+    if (designs.length === 0) {
+        await ctx.replyWithHTML(ctx.i18n.t("shop.product_view.empty"));
+        return;
+    }
+
+    await ctx.replyWithPhoto(designs[0].image, {
+        caption: ctx.i18n.t("shop.product_view.product.text", {
+            title: designs[0].title_uz,
+            description: designs[0].description_uz,
+            price: designs[0].price,
+            category: designs[0].category.name_uz
+        }),
+        parse_mode: "HTML",
+        ...designPaginationButtons(ctx.i18n, offset, totalDesigns, designs[0].id, true, categoryId)
+    });
+
+    await deleteMessage(ctx);
+    console.clear();
+    consola.success("Next design with category..............................................");
+};
+
+// Keyingi dizaynni ko'rish uchun ishga tushdi(SHOP)
+export const viewPreviousDesignWithCategoryAction = async (ctx: any): Promise<void> => {
+    const match = ctx.match;
+    const categoryId = parseInt(match[1], 10);
+    let offset = parseInt(match[2], 10);
+
+    offset = offset > 0 ? offset - 1 : 0; // Decrement the offset for the previous page
+    // @ts-ignore
+    const designs = await designService.getDesignsByCategoryWithPaginated(categoryId, offset, 1);
+    // @ts-ignore
+    const totalDesigns = await designService.getCountOfDesignsByCategory(categoryId);
+
+    if (designs.length === 0) {
+        await ctx.replyWithHTML(ctx.i18n.t("shop.product_view.empty"));
+        return;
+    }
+
+    await ctx.replyWithPhoto(designs[0].image, {
+        caption: ctx.i18n.t("shop.product_view.product.text", {
+            title: designs[0].title_uz,
+            description: designs[0].description_uz,
+            price: designs[0].price,
+            category: designs[0].category.name_uz
+        }),
+        parse_mode: "HTML",
+        ...designPaginationButtons(ctx.i18n, offset, totalDesigns, designs[0].id, true, categoryId)
+    });
+
+    await deleteMessage(ctx);
+    console.clear();
+    consola.success("Previous design with category..............................................");
+};
+
+// Dizayn kategoriyalarini ko'rish uchun ishga tushdi(SHOP)
+export const viewDesignAllCategoryAction = async (ctx: any): Promise<void> => {
+    const i18n = ctx.i18n;
+    let message = await ctx.replyWithHTML("loading...");
+    const categories = await categoryService.getAllCategories();
+    if (categories.length === 0) {
+        await ctx.replyWithHTML(i18n.t("shop.categories.empty"));
+        return;
+    }
+    let text = i18n.t("shop.product_view.search_with_category.category.text");
+    await ctx.replyWithHTML(text, searchWithCategoryButtons(i18n, categories));
+    try {
+        await ctx.telegram.deleteMessage(ctx.chat.id, message.message_id);
+    } catch (e) {
+        consola.error(e);
+    }
+}
+
+// Dizayn ko'rish uchun ishga tushdi (SHOP)
+export const viewDesignAction = async (ctx: any): Promise<void> => {
+    const i18n = ctx.i18n;
+    ctx.session.offset = 0; // Start from the first design
+    const offset = ctx.session.offset;
+
+    // @ts-ignore
+    const designs = await designService.getApprovedDesignsPaginated(1, offset);
+    if (designs.length === 0) {
+        await ctx.replyWithHTML(i18n.t("shop.product_view.empty"));
+        return;
+    }
+
+    const totalDesigns = await designService.getCountOfApprovedDesigns();
+    await ctx.replyWithHTML(i18n.t("shop.product_view.welcome"), {
+        reply_markup: {remove_keyboard: true}
+    });
+
+    const currentDesign = designs[0]; // Display the first design
+    await ctx.replyWithPhoto(currentDesign.image, {
+        caption: i18n.t("shop.product_view.product.text", {
+            title: currentDesign.title_uz,
+            description: currentDesign.description_uz,
+            price: currentDesign.price,
+            category: currentDesign.category.name_uz
+        }),
+        parse_mode: "HTML",
+        ...designPaginationButtons(i18n, offset, totalDesigns, currentDesign.id)
     });
 };
 
+// Keyingi dizaynni ko'rish (SHOP)
 export const viewNextDesignAction = async (ctx: any): Promise<void> => {
     let offset = ctx.session.offset || 0;
+
+    // Increase offset to get the next design
     offset++;
-    let designs = await designService.getApprovedDesignsPaginated(1, offset);
-    consola.success(designs);
+
+    // Update session with the new offset
+    ctx.session.offset = offset;
+
+    // Fetch the designs based on the new offset
+    let designs = await designService.getApprovedDesignsPaginated(offset);
     const i18n = ctx.i18n;
+
     if (designs.length === 0) {
         await ctx.replyWithHTML(i18n.t("shop.product_view.empty"));
         return;
     }
-    const countOnlyApprovedDesigns = await designService.getCountOfApprovedDesigns()
+
+    const totalDesigns = await designService.getCountOfApprovedDesigns();
+
     await ctx.replyWithPhoto(designs[0].image, {
-        parse_mode: "HTML",
         caption: i18n.t("shop.product_view.product.text", {
             title: designs[0].title_uz,
             description: designs[0].description_uz,
             price: designs[0].price,
             category: designs[0].category.name_uz
         }),
-        ...designPaginationButtons(i18n, offset < countOnlyApprovedDesigns - 1 ? offset + 1 : countOnlyApprovedDesigns - 1, countOnlyApprovedDesigns, designs[0].id)
+        parse_mode: "HTML",
+        ...designPaginationButtons(i18n, offset, totalDesigns, designs[0].id)
     });
+
     await deleteMessage(ctx);
 };
 
+// Oldingi dizaynni ko'rish (SHOP)
 export const viewPreviousDesignAction = async (ctx: any): Promise<void> => {
     let offset = ctx.session.offset || 0;
-    offset--;
-    let designs = await designService.getApprovedDesignsPaginated(1, offset < 0 ? 0 : offset);
+
+    // Decrease the offset to get the previous design, but ensure it doesn't go below 0
+    offset = offset > 0 ? offset - 1 : 0;
+
+    // Update session with the new offset
+    ctx.session.offset = offset;
+
+    // Fetch the designs based on the new offset
+    let designs = await designService.getApprovedDesignsPaginated(offset);
     const i18n = ctx.i18n;
+
     if (designs.length === 0) {
         await ctx.replyWithHTML(i18n.t("shop.product_view.empty"));
         return;
     }
-    const countOnlyApprovedDesigns = await designService.getCountOfApprovedDesigns();
+
+    const totalDesigns = await designService.getCountOfApprovedDesigns();
+
     await ctx.replyWithPhoto(designs[0].image, {
-        parse_mode: "HTML",
         caption: i18n.t("shop.product_view.product.text", {
             title: designs[0].title_uz,
             description: designs[0].description_uz,
             price: designs[0].price,
             category: designs[0].category.name_uz
         }),
-        ...designPaginationButtons(i18n, offset < 0 ? 0 : offset, countOnlyApprovedDesigns, designs[0].id)
+        parse_mode: "HTML",
+        ...designPaginationButtons(i18n, offset, totalDesigns, designs[0].id)
     });
+
     await deleteMessage(ctx);
 };
 
+// Savatchaga qo'shish uchun ishga tushdi(SHOP)
 export const addToCartAction = async (ctx: any): Promise<void> => {
     const designId = parseInt(ctx.match[1]); // Dizayn ID'sini olish
     try {
@@ -368,6 +665,7 @@ export const addToCartAction = async (ctx: any): Promise<void> => {
     }
 };
 
+// Shop menyuga qaytish uchun ishga tushdi(SHOP)
 export const backToShopMenuAction = async (ctx: any): Promise<void> => {
     const i18n = ctx.i18n;
     await ctx.replyWithHTML(i18n.t("shop.menu.title"), shopMenuButtons(i18n));

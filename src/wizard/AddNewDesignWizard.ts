@@ -108,10 +108,12 @@ newDesignCategoryScene.on("text", async (ctx) => {
     // @ts-ignore
     await ctx.scene.reenter();
 });
-
+//
 newDesignCategoryScene.on("callback_query", async (ctx) => {
     // @ts-ignore
     const categoryId = ctx.callbackQuery.data.split("_")[1];
+    console.clear();
+    consola.box(categoryId);
     // @ts-ignore
     ctx.session.newDesign.categoryId = categoryId;
     try {
@@ -122,6 +124,22 @@ newDesignCategoryScene.on("callback_query", async (ctx) => {
     // @ts-ignore
     await ctx.scene.enter("newDesignConfirmationScene");
 });
+
+// newDesignCategoryScene.action(/category_(\\d+)/i, async (ctx) => {
+//     // @ts-ignore
+//     const categoryId = ctx.match[1];
+//     console.clear();
+//     consola.box(categoryId);
+//     // @ts-ignore
+//     ctx.session.newDesign.categoryId = categoryId;
+//     try {
+//         await ctx.deleteMessage();
+//     } catch (e) {
+//         consola.error(e);
+//     }
+//     // @ts-ignore
+//     await ctx.scene.enter("newDesignConfirmationScene");
+// });
 
 const newDesignConfirmationScene = new Scenes.BaseScene("newDesignConfirmationScene");
 
