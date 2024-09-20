@@ -12,7 +12,8 @@
     "rootDir": "src"
   },
   "include": [
-    "src"
+    "src",
+    "locales"
   ],
   "exclude": [
     "node_modules"

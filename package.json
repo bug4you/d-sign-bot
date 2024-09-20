@@ -6,7 +6,7 @@
   "scripts": {
     "start": "ts-node ./src/bot.ts",
     "dev": "nodemon",
-    "build": "tsc"
+    "build": "tsc && cp -r src/locales dist/locales"
   },
   "dependencies": {
     "@telegraf/session": "^2.0.0-beta.7",
