@@ -37,4 +37,8 @@ export class CategoryService {
     async deleteCategory(id: number): Promise<void> {
         await this.categoryRepository.delete(id);
     }
+
+    async getCountCategory(): Promise<number> {
+        return this.categoryRepository.count()
+    }
 }

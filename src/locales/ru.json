@@ -1,12 +1,12 @@
 {
-  "greeting": "<b>Привет</b>, <a href='tg://user?id=${id}'>${first_name}</a>!\n\n<i>Добро пожаловать в наш бот! С помощью этого бота вы можете разместить заказ через наши существующие службы.</i>\n\n<i>Выберите одну из следующих команд, чтобы использовать бота:</i>",
+  "greeting": "<b>Здравствуйте</b>, <a href='tg://user?id=${id}'>${first_name}</a>!\n\n<i>Добро пожаловать в наш бот! С помощью этого бота вы можете сделать заказ, используя наши доступные услуги.</i>\n\n<i>Для использования бота выберите одну из следующих команд:</i>",
   "menu": {
     "services": "\uD83D\uDEE0\uFE0F Услуги",
     "shop": "\uD83D\uDECD Магазин",
     "cart": "\uD83D\uDED2 Корзина",
     "profile": "\uD83D\uDC64 Личный кабинет",
     "about": "\uD83D\uDCD6 О нас",
-    "contact": "\uD83D\uDCF1 Контакт",
+    "contact": "\uD83D\uDCF1 Контакты",
     "language": "\uD83C\uDF10 Выбор языка",
     "settings": "\u2699\uFE0F Настройки",
     "help": "\uD83D\uDC65 Помощь",
@@ -14,25 +14,46 @@
     "back_to_menu": "\u2B05\uFE0F Вернуться в меню"
   },
   "language": {
-    "uz": "\uD83C\uDDFA\uD83C\uDDFF O'zbekcha \uD83C\uDDFA\uD83C\uDDFF",
+    "uz": "\uD83C\uDDFA\uD83C\uDDFF O'zbek \uD83C\uDDFA\uD83C\uDDFF",
     "ru": "\uD83C\uDDF7\uD83C\uDDFA Русский \uD83C\uDDF7\uD83C\uDDFA",
     "en": "\uD83C\uDDEC\uD83C\uDDE7 English \uD83C\uDDEC\uD83C\uDDE7",
-    "title": "<b>Tilni tanlash</b>",
-    "description": "<b><i>\uD83C\uDDFA\uD83C\uDDFF Bot tilini o'zgartirish uchun quyidagi buyruqlardan birini tanlang.</i>\n<i>\uD83C\uDDF7\uD83C\uDDFA Выберите одну из команд ниже, чтобы изменить язык бота.</i>\n<i>\uD83C\uDDEC\uD83C\uDDE7 Choose one of the commands below to change the bot language.</i>\n\n<i>Текущий язык бота — русский.</i></b>",
-    "changed": "Изменен язык бота на русский."
+    "title": "<b>Выбор языка</b>",
+    "description": "<b><i>\uD83C\uDDFA\uD83C\uDDFF Выберите одну из команд ниже, чтобы изменить язык бота.</i>\n<i>\uD83C\uDDF7\uD83C\uDDFA Выберите одну из команд ниже, чтобы изменить язык бота.</i>\n<i>\uD83C\uDDEC\uD83C\uDDE7 Выберите одну из команд ниже, чтобы изменить язык бота.</i>\n\n<i>Текущий язык бота — узбекский.</i></b>",
+    "changed": "Язык бота изменен на узбекский."
   },
   "shop": {
     "title": "<b>Магазин</b>",
-    "empty": "<i>К сожалению, в данный момент магазин пуст. В ближайшее время будут добавлены новые дизайны. Пожалуйста, следите за обновлениями 😇</i>",
+    "empty": "<i>К сожалению, сейчас магазин пуст. Скоро будут добавлены новые дизайны. Следите за обновлениями 😇</i>",
     "menu": {
       "title": "<b>Меню магазина</b>\n\n<i>Выберите одну из следующих кнопок:</i>",
-      "products_view": "\uD83D\uDECD Просмотр продуктов",
+      "products_view": "\uD83D\uDECD Просмотр товаров",
       "search_with_category": "\uD83D\uDD0D Поиск по категориям",
       "active_orders": "\uD83D\uDCC4 Активные заказы",
-      "completed_orders": "\uD83D\uDCC5 Завершенные заказы"
+      "my_active_orders": "\uD83D\uDCC4 Мои активные заказы",
+      "completed_orders": "\uD83D\uDCC5 Завершенные заказы",
+      "my_completed_orders": "\uD83D\uDCC5 Мои завершенные заказы"
+    },
+    "product_view": {
+      "welcome": "<b>Добро пожаловать в наш магазин!</b>\n\n<i>Выберите один из следующих дизайнов:</i>",
+      "title": "<b>Товары</b>",
+      "empty": "<i>Магазин пуст. Скоро будут добавлены новые дизайны. Следите за обновлениями 😇</i>",
+      "back_to_shop_menu": "\uD83D\uDECD Вернуться в магазин",
+      "product": {
+        "text": "<b>\uD83C\uDF81 Товар:</b>\n<i>Следующая информация о выбранном вами товаре:</i>\n\n<b>\uD83C\uDF81 Название:</b> <i>${title}</i>\n<b>\uD83C\uDF81 Описание:</b> <i>${description}</i>\n<b>\uD83C\uDF81 Цена:</b> <i>${price}</i>\n<b>\uD83C\uDF81 Категория:</b> <i>${category}</i>",
+        "add_to_cart": "\uD83D\uDECD Добавить в корзину \uD83D\uDECD"
+      },
+      "product_not_found": "<i>Товар не найден. Пожалуйста, выберите другой товар.</i>",
+      "search_with_category": {
+        "title": "<b>Поиск по категориям</b>",
+        "empty": "<i>На данный момент категории отсутствуют. Пожалуйста, подождите, пока появятся новые категории.</i>",
+        "category": {
+          "text": "<b>\uD83D\uDCD2 Категория:</b>\n<i>Вы можете легко искать дизайны по следующим категориям:</i>",
+          "back_to_shop_menu": "\uD83D\uDECD Вернуться в магазин"
+        }
+      }
     },
     "categories": {
-      "title": "<b>Категория</b> <i>Выберите кнопку из меню категорий</i>",
+      "title": "<b>Категории</b> <i>Выберите нужную кнопку из меню</i>",
       "add_category": "\uD83D\uDCDD Добавить категорию",
       "edit_category": "\uD83D\uDD27 Редактировать категорию",
       "all_categories": "\uD83D\uDCD2 Все категории",
@@ -41,7 +62,19 @@
   },
   "cart": {
     "title": "<b>Корзина</b>",
-    "empty": "Ваша корзина пуста. Вы еще не выбрали ни одного товара?!",
+    "empty": "<i>Ваша корзина пуста. Вы ещё не выбрали ни одного товара!</i>",
+    "text": "<b>\uD83D\uDED2 Корзина:</b>\n<i>Список товаров в вашей корзине выглядит следующим образом:</i>\n\n${products}\n\n<b>\uD83D\uDED2 Корзина:</b>\n<i>Количество товаров в корзине: ${cartProductSize}</i>",
+    "product": {
+      "title": "<b>\uD83C\uDF81 Товар:</b>",
+      "name": "<b>Название:</b> <i>${title}</i>",
+      "price": "<b>Цена:</b> <i>${price}</i>",
+      "total": "<b>Итого:</b> <i>${total}</i>",
+      "full_text": "\n<b>${index}. Товар:</b>\n<b>Название:</b> <i>${title}</i>\n<b>Цена:</b> <i>${price}</i>\n<b>Количество:</b> <i>${quantity}</i>\n<b>Удалить:</b> <i>/rfc_${removeDesignId}</i>",
+      "remove": {
+        "success": "<i>Товар успешно удален из корзины.</i>",
+        "error": "<i>Ошибка при удалении товара из корзины. Пожалуйста, попробуйте снова.</i>"
+      }
+    },
     "total": "Итого",
     "quantity": "Количество",
     "price": "Цена",
@@ -49,56 +82,176 @@
     "checkout": "\uD83D\uDCDD Оформить заказ \uD83D\uDCDD",
     "remove": "\uD83D\uDDD1 Удалить \uD83D\uDDD1",
     "clear": "\uD83D\uDDD1 Очистить корзину \uD83D\uDDD1",
+    "back_to_shop": "\uD83D\uDECD Вернуться в магазин",
     "back": "\u2B05\uFE0F Назад"
   },
   "profile": {
     "title": "<b>Личный кабинет</b>",
     "menu": {
       "title": "<b>Меню личного кабинета</b>\n\n<i>Выберите одну из следующих кнопок:</i>",
-      "profile_info": "\uD83D\uDC64  Мои данные",
+      "profile_info": "\uD83D\uDC64 Моя информация",
       "edit_profile": "\uD83D\uDC64 Редактировать профиль",
       "active_orders": "\uD83D\uDCC4 Активные заказы",
       "completed_orders": "\uD83D\uDCC5 Завершенные заказы",
       "bot_statistics": "\uD83D\uDCCA Статистика бота",
-      "bot_categories": "\uD83D\uDCD2 Категории товаров",
+      "bot_categories": "\uD83D\uDCD2 Категории бота",
       "all_designers": "\uD83D\uDC64 Все дизайнеры",
-      "unapproved_designers": "\uD83D\uDC64 Неодобренные дизайнеры",
-      "approved_designers": "\uD83D\uDC64 Одобренные дизайнеры",
-      "approved_designs": "\uD83C\uDFDD Одобренные дизайны",
-      "back_to_menu": "\u2B05\uFE0F Menyuga qaytish"
-    },
-    "info": {
-      "title": "<b>Мои данные</b>",
-      "name": "Имя",
-      "phone": "Телефон",
-      "email": "Эл. почта",
-      "address": "Адрес",
-      "back": "\u2B05\uFE0F Назад"
-    },
-    "category": {
-      "add": {
-        "prompt": "<i>Введите название новой категории:</i>",
-        "success": "<i>Новая категория успешно добавлена: ${categoryName}</i>",
-        "error": "<i>Ошибка при добавлении новой категории. Пожалуйста, попробуйте еще раз.</i>",
-        "taken": "<i>Категория с таким названием уже существует. Пожалуйста, введите другое название.</i>"
-      },
-      "edit": {
-        "prompt": "<i>Введите новое название категории:</i>",
-        "success": "<i>Название категории успешно изменено: ${categoryName}</i>",
-        "error": "<i>Ошибка при изменении названия категории. Пожалуйста, попробуйте еще раз.</i>",
-        "taken": "<i>Категория с таким названием уже существует. Пожалуйста, введите другое название.</i>"
-      },
-      "list": {
-        "title": "<b>Список категорий</b>",
-        "empty": "<i>На данный момент категорий нет. Подождите, пока будет добавлена новая категория.</i>"
-      }
+      "unapproved_designers": "\uD83D\uDC64 Неподтвержденные дизайнеры",
+      "approved_designers": "\uD83D\uDC64 Подтвержденные дизайнеры",
+      "me_not_approved_design": "Мои неподтвержденные дизайны",
+      "me_approved_design": "Мои подтвержденные дизайны",
+      "add_new_design": "\uD83D\uDCC4 Добавить новый дизайн"
     }
   },
-  "help": {
-    "title": "<b>Помощь</b>",
-    "text": "<i>Если у вас возникли вопросы или проблемы, пожалуйста, свяжитесь с нами по следующим контактам:</i>",
-    "contact": "\uD83D\uDCF1 Контакт",
-    "back": "\u2B05\uFE0F Назад"
+  "error": {
+    "command_not_found": "<i>Команда не найдена. Пожалуйста, выберите действующую команду из меню.</i>",
+    "message_error": "<i>Произошла ошибка при обработке вашего запроса. Пожалуйста, попробуйте еще раз.</i>",
+    "language_error": "<i>Ошибка при изменении языка. Пожалуйста, попробуйте еще раз.</i>"
   },
-  "unknown_command": "<i>Неизвестная команда. Пожалуйста, выберите одну из следующих кнопок.</i>"
+  "settings": {
+    "title": "<b>Настройки</b>",
+    "language": "\uD83C\\uDF10 Выбор языка",
+    "back": "\\u2B05\\uFE0F Вернуться в меню"
+  },
+  "help": {
+    "title": "<b>Yordam</b>",
+    "text": "<i>Agar savollaringiz yoki muammolaringiz bo'lsa, iltimos, quyidagi aloqa ma'lumotlaridan biriga murojaat qiling:</i>",
+    "contacts": {
+      "phone": "\uD83D\uDCF1 Telefon raqami",
+      "email": "\uD83D\uDCE7 Elektron pochta",
+      "telegram": "\uD83D\uDCE3 Telegram"
+    }
+  },
+  "about": {
+    "title": "<b>Biz haqimizda</b>",
+    "text": "<b>D-sign</b> ga xush kelibsiz! Biz ijodkorlarga o‘z dizaynlarini mahsulotlarda namoyon etish imkoniyatini beramiz, shuningdek, individual mijozlar va kompaniyalar uchun original dizaynli maxsus mahsulotlar taqdim etamiz. Noyob sovg‘alar yoki brendlangan korporativ buyurtmalar uchun biz bilan bog’laning!"
+  },
+  "contact": {
+    "title": "<b>Aloqa</b>",
+    "text": "<i>Agar savollaringiz yoki muammolaringiz bo'lsa, iltimos, quyidagi aloqa ma'lumotlaridan biriga murojaat qiling:</i>",
+    "contacts": {
+      "phone": "\uD83D\uDCF1 Telefon raqami",
+      "email": "\uD83D\uDCE7 Elektron pochta",
+      "telegram": "\uD83D\uDCE3 Telegram"
+    }
+  },
+  "designer": {
+    "title": "<b>Dizayner bo'lish</b>",
+    "text": "<i>Agar siz dizayner bo'lishni xohlasangiz, iltimos, quyidagi ma'lumotlarni to'ldiring:</i>",
+    "first_name": {
+      "prompt": "<i>Ismingizni kiriting:</i>"
+    },
+    "last_name": {
+      "prompt": "<i>Familiyangizni kiriting:</i>"
+    },
+    "phone": {
+      "prompt": "<i>Telefon raqamingizni kiriting:</i>"
+    },
+    "phone_in_telegram": {
+      "prompt": "<i>Telegramdagi telefon raqamingizni kiriting:</i>",
+      "share": "📞 Telefon raqamni yuborish"
+    },
+    "passport_image": {
+      "prompt": "<i>Passportingizning rasmni yuboring:</i>"
+    },
+    "confirmation": {
+      "text": "<i>Ma'lumotlaringizni tasdiqlang:</i>\n\n<b>Ism:</b> <i>${first_name}</i>\n<b>Familiya:</b> <i>${last_name}</i>\n<b>Telefon raqam:</b> <i>${phone}</i>\n<b>Telegramdagi telefon raqam:</b> <i>${phone_in_telegram}</i>",
+      "i_confirm": "\u2705 Tasdiqlayman",
+      "i_decline": "\u274C Rad etaman",
+      "i_will_check_later": "\uD83D\uDC4D Keyinroq tekshiraman",
+      "not_confirmed": "<i>Ma'lumotlaringiz tasdiqlanmadi. Iltimos, quyidagi tugmalardan birini tanlang:</i>",
+      "i_confirmed": "<i>Xabar uchun rahmat! Ma'lumotlaringiz admin tomonidan ko'rib chiqiladi va sizga javob yuboriladi.</i>",
+      "i_declined": "<i>Dizayner bo'lish taklifi muvaffaiyatli bekor qilindi.</i>"
+    },
+    "back": "\u2B05\uFE0F Ortga"
+  },
+  "design": {
+    "add": {
+      "wizard": {
+        "title": "<b>Добавить новый дизайн</b>",
+        "text": "<i>Чтобы добавить новый дизайн, заполните следующую информацию:</i>",
+        "name": {
+          "prompt": "<i>Введите название дизайна:</i>"
+        },
+        "description": {
+          "prompt": "<i>Введите краткое описание дизайна:</i>"
+        },
+        "price": {
+          "prompt": "<i>Введите стоимость дизайна:</i>"
+        },
+        "image": {
+          "prompt": "<i>Отправить изображение дизайна:</i>"
+        },
+        "category": {
+          "prompt": "<i>Выберите категорию дизайна:</i>",
+          "not_found": "<i>Категория не найдена. Пожалуйста, выберите другую категорию.</i>",
+          "empty": "<i>На данный момент категорий нет. Подождите, пока будет добавлена другая категория.</i>"
+        },
+        "view": {
+          "new_design": "<b>Новый дизайн</b>",
+          "tag_title": "<b>Название:</b>",
+          "tag_description": "<b>Описание:</b>",
+          "tag_price": "<b>Цена:</b>",
+          "tag_category": "<b>Категория:</b>",
+          "check_info": "<i>\uD83D\uDC64 Проверить данные на наличие ошибок?</i>",
+          "i_checked": "\u2705 Я закончил проверку",
+          "i_edit": "\uD83D\uDD27 Я исправлю ошибку",
+          "i_deleted": "\uD83D\uDDD1 Я отменяю",
+          "confirmed": "<i>Дизайн успешно добавлен. Наши дизайнеры рассмотрят ваш дизайн и отправят вам ответ.</i>",
+          "i_declined": "<i>Вы успешно отменили возможность добавления дизайна.</i>",
+          "design_approved": "<i>Дизайн успешно добавлен. Наши дизайнеры рассмотрят ваш дизайн и отправят вам ответ.</i>",
+          "design_rejected": "<i>Ваш дизайн был успешно отменен.</i>"
+        },
+        "confirmation": {
+          "text": "<i>Ma'lumotlaringizni tasdiqlang:</i>\n\n<b>Nomi:</b> <i>${name}</i>\n<b>Tavsifi:</b> <i>${description}</i>\n<b>Narxi:</b> <i>${price}</i>\n<b>Rasm:</b> <i>${image}</i>\n<b>Kategoriya:</b> <i>${category}</i>",
+          "i_confirm": "\u2705 Tasdiqlayman",
+          "i_decline": "\u274C Rad etaman",
+          "not_confirmed": "<i>Ma'lumotlaringiz tasdiqlanmadi. Iltimos, quyidagi tugmalardan birini tanlang:</i>",
+          "i_confirmed": "<i>Dizayn muvaffaqiyatli qo'shildi. Bizning dizaynerlarimiz sizning dizayningizni ko'rib chiqishadi va sizga javob yuboradi.</i>",
+          "i_declined": "<i>Dizayn qo'shish muvaffaqiyatli bekor qilindi.</i>"
+        }
+      },
+      "error": "<i>Dizayn qo'shishda xatolik yuz berdi. Iltimos, qaytadan urinib ko'ring.</i>"
+    }
+  },
+  "unknown_command": "<i>Неизвестная команда. Пожалуйста, выберите одну из кнопок ниже.</i>",
+  "pagination": {
+    "previous": "\u2B05\uFE0F Предыдущий",
+    "next": "\u27A1\uFE0F Далее"
+  },
+  "order": {
+    "user": {
+      "my_active_orders": {
+        "title": "<b>Мои заказы на активы</b>",
+        "empty": "<i>Ваш активный список заказов пуст.</i>",
+        "order": {
+          "text": "<b>\uD83D\uDCC4 Заказ:</b>\n<i>Следующая информация относится к выбранному вами заказу:</i>${result}",
+          "item": {
+            "title": "<b>\uD83C\uDF81 Товар:</b>",
+            "name": "<b>Имя:</b> <i>${title}</i>",
+            "price": "<b>Цена:</b> <i>${цена}</i>",
+            "quantity": "<b>Количество:</b> <i>${quantity}</i>",
+            "total": "<b>Итого:</b> <i>${total}</i>",
+            "result": "\n\n<b>\uD83C\uDD94:</b> <i>${id}</i>\n<b>\uD83C\uDFF7 Продукт:</b> <i>${title}< /i>\n<b>\uD83D\uDCB5 Цена:</b> <i>${цена}</i>\n<b>\uD83D\uDCC5 Дата заказа:</b> <i>${созданный_at}</i>\n<b>\uD83D\uDD04 Статус заказа:</b> <i>${status === 'pending' ? 'Ожидание':статус === 'processing'?'Обработка':'Другое'}</i>"
+          },
+          "cancel": "\uD83D\uDDD1 Buyurtmani bekor qilish \uD83D\uDDD1"
+        }
+      },
+      "my_completed_orders": {
+        "title": "<b>Mening yakunlangan buyurtmalarim</b>",
+        "empty": "<i>Sizning yakunlangan buyurtmalar ro'yxatingiz bo'sh.</i>",
+        "order": {
+          "text": "<b>\uD83D\uDCC5 Buyurtma:</b>\n<i>Quyidagi ma'lumotlar sizning tanlagan buyurtmalaringiz bo'yicha:</i>\n\n${result}",
+          "item": {
+            "title": "<b>\uD83C\uDF81 Maxsulot:</b>",
+            "name": "<b>Nomi:</b> <i>${title}</i>",
+            "price": "<b>Narxi:</b> <i>${price}</i>",
+            "quantity": "<b>Soni:</b> <i>${quantity}</i>",
+            "total": "<b>Jami:</b> <i>${total}</i>",
+            "result": "<b>\uD83D\uDCC5 ID:</b> <i>${id}</i>\n<b>\uD83D\uDCC5 Maxsulot:</b> <i>${title}</i>\n<b>\uD83D\uDCC5 Narxi:</b> <i>${price}</i>\n<b>\uD83D\uDCC5 Buyurtma sanasi:</b> <i>${created_at}</i>\n<b>\uD83D\uDCC5 Buyurtma holati:</b> <i>${status === 'completed' ? 'Yakunlandi ✔':status === 'canceled' ? 'Bekor qilingan ✖':'Boshqa'}</i>"
+          }
+        }
+      }
+    }
+  }
 }

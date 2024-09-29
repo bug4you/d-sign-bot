@@ -54,9 +54,9 @@
     },
     "categories": {
       "title": "<b>Kategoriya</b> <i>menyusidan kerakli tugmani tanlang</i>",
-      "add_category": "\uD83D\uDCDD Kategoriya qo'shish",
-      "edit_category": "\uD83D\uDD27 Kategoriyani tahrirlash",
-      "all_categories": "\uD83D\uDCD2 Barcha kategoriyalar",
+      "add_category": "➕ Qo'shish",
+      "edit_category": "✏️ Tahrirlash",
+      "all_categories": "📚 Barcha kategoriyalar",
       "back_to_shop_menu": "\uD83D\uDECD Do'konga qaytish"
     }
   },
@@ -89,19 +89,20 @@
     "title": "<b>Shaxsiy kabinet</b>",
     "menu": {
       "title": "<b>Shaxsiy kabinet menyusi</b>\n\n<i>Quyidagi tugmalardan birini tanlang:</i>",
-      "profile_info": "\uD83D\uDC64  Ma'lumotlarim",
-      "edit_profile": "\uD83D\uDC64 Profilni tahrirlash",
-      "active_orders": "\uD83D\uDCC4 Aktiv buyurtmalar",
+      "profile_info": "ℹ Ma'lumot",
+      "edit_profile": "📝 Tahrirlash",
+      "active_orders": "\uD83D\uDCC4 Faol buyurtmalar",
       "completed_orders": "\uD83D\uDCC5 Yakunlangan buyurtmalar",
-      "bot_statistics": "\uD83D\uDCCA Bot statistikasi",
-      "bot_categories": "\uD83D\uDCD2 Bot kategoriyalari",
+      "bot_statistics": "\uD83D\uDCCA Statistika",
+      "bot_categories": "\uD83D\uDCD2 Kategoriya",
       "all_designers": "\uD83D\uDC64 Barcha dizaynerlar",
-      "unapproved_designers": "\uD83D\uDC64 Tasdiqlanmagan dizaynerlar",
-      "approved_designers": "\uD83D\uDC64 Tasdiqlangan dizaynerlar",
+      "unapproved_designers": "\uD83D\uDC68\u200D\uD83C\uDFA8  Dizayner ⏳",
+      "approved_designers": "\uD83D\uDC68\u200D\uD83C\uDFA8  Dizayner ✅",
+      "unapproved_designs": "\uD83C\uDFDD Dizaynlar ⏳",
+      "approved_designs": "\uD83C\uDFDD Dizaynlar ✅",
       "me_not_approved_design": "Tasdiqlanmagan dizaynlarim",
       "me_approved_design": "Tasdiqlangan dizaynlarim",
       "add_new_design": "\uD83D\uDCC4 Yangi dizayn qo'shish",
-      "approved_designs": "\uD83C\uDFDD Tasdiqlanmagan dizaynlar",
       "back_to_menu": "\u2B05\uFE0F Menyuga qaytish",
       "being_designer": "\uD83D\uDC64 Dizayner bo'lish"
     },
@@ -283,6 +284,38 @@
             "result": "<b>\uD83D\uDCC5 ID:</b> <i>${id}</i>\n<b>\uD83D\uDCC5 Maxsulot:</b> <i>${title}</i>\n<b>\uD83D\uDCC5 Narxi:</b> <i>${price}</i>\n<b>\uD83D\uDCC5 Buyurtma sanasi:</b> <i>${created_at}</i>\n<b>\uD83D\uDCC5 Buyurtma holati:</b> <i>${status === 'completed' ? 'Yakunlandi ✔':status === 'canceled' ? 'Bekor qilingan ✖':'Boshqa'}</i>"
           }
         }
+      }
+    }
+  },
+  "admin": {
+    "design": {
+      "approved": {
+        "title": "<b>Tasdiqlangan dizaynlar</b>",
+        "empty": "<i>Tasdiqlangan dizaynlar mavjud emas.</i>"
+      },
+      "pending": {
+        "title": "<b>Tasdiqlanmagan dizaynlar</b>",
+        "empty": "<i>Tasdiqlanmagan dizaynlar mavjud emas.</i>"
+      },
+      "view": {
+        "text": "<b>\uD83C\uDF81 Dizayn:</b>\n<i>Quyidagi ma'lumotlar sizning tanlagan dizaynlar bo'yicha:</i>\n\n<b>\uD83C\uDF81 Nomi:</b> <i>${title}</i>\n<b>\uD83C\uDF81 Tavsifi:</b> <i>${description}</i>\n<b>\uD83C\uDF81 Narxi:</b> <i>${price}</i>\n<b>\uD83C\uDF81 Kategoriya:</b> <i>${category}</i>\n\uD83C\uDF81 Bekor qilish:</b> <i>/amuted_{designId}</i>"
+      }
+    },
+    "designer": {
+      "approved": {
+        "title": "<b>Tasdiqlangan dizaynerlar</b>",
+        "empty": "<i>Tasdiqlangan dizaynerlar mavjud emas.</i>"
+      },
+      "pending": {
+        "title": "<b>Tasdiqlanmagan dizaynerlar</b>",
+        "empty": "<i>Tasdiqlanmagan dizaynerlar mavjud emas.</i>"
+      },
+      "view": {
+        "text": "<b>\uD83D\uDC64 Dizayner:</b>\n<i>Quyidagi ma'lumotlar sizning tanlagan dizaynerlar bo'yicha:</i>\n\n<b>\uD83D\uDC64 Ismi:</b> <i>${name}</i>\n<b>\uD83D\uDC64 Familiyasi:</b> <i>${surname}</i>\n<b>\uD83D\uDC64 Telefon raqami:</b> <i>${phone}</i>\n<b>\uD83D\uDC64 Telegram ID:</b> <code>${telegram_id}</code>\n\uD83D\uDC64 Bekor qilish:</b> <i>/amute_{designerId}</i>"
+      },
+      "info": {
+        "text": "<b>\uD83D\uDC64 Dizayner ma'lumotlari:</b>\n<i>Quyidagi ma'lumotlar sizning tanlagan dizaynerlar bo'yicha:</i>\n\n<b>\uD83D\uDC64 Ismi:</b> <i>${first_name}</i>\n<b>\uD83D\uDC64 Familiyasi:</b> <i>${last_name}</i>\n<b>\uD83D\uDC64 Telefon raqami:</b> <i>${phone}</i>\n<b>\uD83D\uDC64 Telegram ID:</b> <code>${telegram_id}</code>\n<b>\uD83D\uDC64 Tasdiqlangan:</b> <i>${is_approved ? '✅ Tasdiqlangan':'⏳ Tasdiqlanmagan'}</i>",
+        "go_to_designer_profile": "\uD83D\uDD17 Foydalanuvchi profiliga o'tish"
       }
     }
   }

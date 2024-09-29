@@ -103,11 +103,18 @@ export const searchWithCategoryButtons = (i18n: any, categories: Category[]) => 
 /**
  * Shop categories buttons
  * @param i18n
+ * @param isAdmin
  * */
-export const shopCategoriesButtons = (i18n: any) => {
+export const shopCategoriesButtons = (i18n: any, isAdmin: boolean = false) => {
+    if (isAdmin) {
+        return Keyboard.make([
+            [i18n.t("shop.categories.add_category"), i18n.t("shop.categories.edit_category")],
+            [i18n.t("shop.categories.all_categories")],
+            [i18n.t("menu.back_to_menu"), i18n.t("shop.categories.back_to_shop_menu")]
+        ]).reply();
+    }
     return Keyboard.make([
-        [i18n.t("shop.categories.add_category")],
-        [i18n.t("shop.categories.edit_category"), i18n.t("shop.categories.all_categories")],
+        [i18n.t("shop.categories.all_categories")],
         [i18n.t("menu.back_to_menu"), i18n.t("shop.categories.back_to_shop_menu")]
     ]).reply();
 }
@@ -115,10 +122,9 @@ export const shopCategoriesButtons = (i18n: any) => {
 export const adminProfileButtons = (i18n: any) => {
     return Keyboard.make([
         [i18n.t("profile.menu.profile_info"), i18n.t("profile.menu.bot_statistics")],
+        [i18n.t("profile.menu.unapproved_designs"), i18n.t("profile.menu.approved_designs")],
         [i18n.t("profile.menu.bot_categories")],
-        [i18n.t("profile.menu.approved_designs")],
-        [i18n.t("profile.menu.unapproved_designers")],
-        [i18n.t("profile.menu.approved_designers")],
+        [i18n.t("profile.menu.unapproved_designers"), i18n.t("profile.menu.approved_designers")],
         [i18n.t("menu.back_to_menu")]
     ]).reply();
 }
@@ -183,7 +189,6 @@ export const newDesignAdminConfirmationButtons = (i18n: any, design_id: number |
 export const userProfileButtons = (i18n: any) => {
     return Keyboard.make([
         [i18n.t("profile.menu.profile_info")],
-        [i18n.t("profile.menu.bot_categories")],
         [i18n.t("profile.menu.being_designer")],
         [i18n.t("menu.back_to_menu")]
     ]).reply();

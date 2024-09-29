@@ -52,6 +52,22 @@ export class DesignService {
         });
     }
 
+    async getAllApprovedDesigns(): Promise<Design[]> {
+        return await this.designRepository.find({
+            where: {
+                status: "approved"
+            }
+        })
+    }
+
+    async getAllPendingDesigns(): Promise<Design[]> {
+        return await this.designRepository.find({
+            where: {
+                status: "pending"
+            }
+        })
+    }
+
     async getUserPendingDesigns(userId: number): Promise<Design[]> {
         // Foydalanuvchining "pending" statusidagi barcha dizaynlarini qaytarish
         return this.designRepository.find({
@@ -84,6 +100,10 @@ export class DesignService {
         return this.designRepository.count({
             where: {status: "approved"} // Faqat "approved" dizaynlar
         });
+    }
+
+    async getCountDesigns(): Promise<number> {
+        return this.designRepository.count();
     }
 
     async getDesignsByCategoryWithPaginated(category: Category, offset: number, limit: number = 1): Promise<Design[]> {

@@ -2,9 +2,11 @@ import {
     adminProfileButtons,
     designerProfileButtons,
     designPaginationButtons,
-    menuButtons, searchWithCategoryButtons,
+    menuButtons,
+    searchWithCategoryButtons,
     shopCategoriesButtons,
-    shopMenuButtons, shopMenuOnlyUserButtons,
+    shopMenuButtons,
+    shopMenuOnlyUserButtons,
     userProfileButtons
 } from "./BotKeyboard";
 import {CartService} from "../service/CartService";
@@ -18,6 +20,7 @@ import {DesignService} from "../service/DesignService";
 import {OrderService} from "../service/OrderService";
 import {OrderItemService} from "../service/OrderItemService";
 import {Category} from "../entity/Category";
+import {Key, Keyboard} from "telegram-keyboard";
 
 const designerRequestService = new DesignerRequestService();
 const userService = new UserService();
@@ -209,7 +212,7 @@ export const shopCartAction = async (ctx: any): Promise<void> => {
 
 export const shopCategoriesAction = async (ctx: any): Promise<void> => {
     const i18n = ctx.i18n;
-    await ctx.replyWithHTML(i18n.t("shop.categories.title"), shopCategoriesButtons(i18n));
+    await ctx.replyWithHTML(i18n.t("shop.categories.title"), shopCategoriesButtons(i18n, ctx.session.role === "admin"));
 }
 
 // src/utils/BotActions.ts
@@ -269,14 +272,11 @@ export const profileInfoAction = async (ctx: any, user: User | null): Promise<vo
  * */
 export const profileBotStatisticsAction = async (ctx: any): Promise<void> => {
     const i18n = ctx.i18n;
-    // const userCount = await userService.getUserCount();
-    // const designerCount = await userService.getDesignerCount();
-    // const orderCount = await orderService.getOrderCount();
-    let productCount = 0;
-    let categoryCount = 0;
-    let designCount = 0;
-    let designerCount = 0;
-    let userCount = 0;
+    let productCount = await designService.getCountOfApprovedDesigns();
+    let categoryCount = await categoryService.getCountCategory();
+    let designCount = await designService.getCountDesigns();
+    let designerCount = await userService.getDesignerCount();
+    let userCount = await userService.getUserCount();
     await ctx.replyWithHTML(i18n.t("profile.bot_statistics.text", {
         userCount,
         designerCount,
@@ -286,9 +286,8 @@ export const profileBotStatisticsAction = async (ctx: any): Promise<void> => {
     }));
 };
 
-// Admin dizayner so'rovlarni ko'rish uchun ishga tushdi
+// Admin dizayner so'rovlarni ko'rishi va tasdiqlashi yoki rad etish uchun ishga tushdi
 export const adminDesignerApprovalAction = async (ctx: any): Promise<void> => {
-    consola.warn("Admin dizayner so'rovlarni tasdiqlash uchun ishga tushdi.");
     let isAdmin = ctx.session.role === "admin";
     if (isAdmin) {
         // @ts-ignore
@@ -297,9 +296,10 @@ export const adminDesignerApprovalAction = async (ctx: any): Promise<void> => {
         let design = await designerRequestService.getRequestById(design_id);
         if (design) {
             await designerRequestService.approveRequest(design_id);
+            // TODO: I18n qo'shish kerak
             await ctx.replyWithHTML("Dizayner so'rovi tasdiqlandi.");
             await userService.updateUser(design.user.id, {is_designer: true});
-            await ctx.answerCbQuery("Dizayner so'rovi tasdiqlandi.");
+            await ctx.answerCbQuery("Designer request approved. ✔");
             await ctx.telegram.sendMessage(design.user.telegram_id, "Sizning dizaynerlik so'rovingiz tasdiqlandi.", menuButtons(ctx.i18n));
             try {
                 await ctx.deleteMessage();
@@ -339,7 +339,7 @@ export const requestDesignerAction = async (ctx: any): Promise<void> => {
 };
 
 // Admin tomonidan tasdiqlanmagan so'rovlarni ko'rish
-export const pendingRequestsAction = async (ctx: any): Promise<void> => {
+export const getAllPendingDesignersAction = async (ctx: any): Promise<void> => {
     const pendingRequests = await designerRequestService.getPendingRequests();
 
     if (pendingRequests.length > 0) {
@@ -365,9 +365,104 @@ export const pendingRequestsAction = async (ctx: any): Promise<void> => {
 };
 
 // src/utils/BotActions.ts ichida
-export const handleDesignerApproval = async (ctx: any): Promise<void> => {
+export const getAllApprovedDesignersAction = async (ctx: any): Promise<void> => {
+    try {
+        if (ctx.session.role === "admin") {
+            const i18n = ctx.i18n;
+            let designers = await designerRequestService.getApprovedRequests();
+            consola.box(designers);
+            if (designers.length === 0) {
+                await ctx.replyWithHTML(i18n.t("admin.designer.approved.empty"));
+                return;
+            }
 
+            let text = i18n.t("admin.designer.approved.title");
+            designers.forEach((designer, index) => {
+                text += `\n${index + 1}. ${designer.user.first_name} ${designer.user.last_name}  <i>/view_designer_${designer.id}</i>`;
+            });
+            await ctx.replyWithHTML(text);
+        }
+        return;
+    } catch (e) {
+        consola.error(e);
+    }
 };
+
+export const getAllApprovedDesignsAction = async (ctx: any): Promise<void> => {
+    try {
+        if (ctx.session.role === "admin") {
+            const i18n = ctx.i18n;
+            let designs = await designService.getAllApprovedDesigns();
+            if (designs.length === 0) {
+                await ctx.replyWithHTML(i18n.t("admin.design.approved.empty"));
+                return;
+            }
+            let text = i18n.t("admin.design.approved.title");
+            designs.forEach((design: Design, index: number) => {
+                text += `\n${index + 1}. ${design.title_uz}  <i>/aview_${design.id}</i>`;
+            });
+
+            await ctx.replyWithHTML(text);
+        }
+        return;
+    } catch (e) {
+        consola.error(e);
+    }
+}
+
+export const getAllPendingDesignsAction = async (ctx: any): Promise<void> => {
+    try {
+        if (ctx.session.role === "admin") {
+            const i18n = ctx.i18n;
+            let designs = await designService.getAllPendingDesigns();
+            if (designs.length === 0) {
+                await ctx.replyWithHTML(i18n.t("admin.design.pending.empty"));
+                return;
+            }
+            let text = i18n.t("admin.design.pending.title");
+            designs.forEach((design: Design, index: number) => {
+                text += `\n${index + 1}. ${design.title_uz}  <i>/pdview_${design.id}</i>`;
+            });
+
+            await ctx.replyWithHTML(text);
+        }
+        return;
+    } catch (e) {
+        consola.error(e);
+    }
+};
+
+export const getDesignerRequestByIdAction = async (ctx: any): Promise<void> => {
+    try {
+        if (ctx.session.role === "admin") {
+            const i18n = ctx.i18n;
+            let requestId = parseInt(ctx.match[1]);
+            let request = await designerRequestService.getRequestById(requestId);
+            if (request) {
+                try {
+                    await ctx.replyWithPhoto(request.passport)
+                } catch (e) {
+                    consola.error(e);
+                }
+                await ctx.replyWithHTML(i18n.t("admin.designer.info.text", {
+                    first_name: request.user.first_name,
+                    last_name: request.user.last_name,
+                    phone: request.user.phone,
+                    is_approved: request.status === "approved",
+                    telegram_id: request.user.telegram_id
+                }), {
+                    parse_mode: "HTML",
+                    ...Keyboard.make([
+                        Key.url(i18n.t("admin.designer.info.go_to_designer_profile"), `tg://user?id=${request.user.telegram_id}`)
+                    ]).inline()
+                });
+            }
+        }
+        return;
+    } catch (e) {
+        consola.error(e);
+    }
+}
 
 // Yangi dizayn qo'shish uchun ishga tushdi
 export const addNewDesignAction = async (ctx: any): Promise<void> => {
@@ -664,6 +759,31 @@ export const addToCartAction = async (ctx: any): Promise<void> => {
         await ctx.reply("❌ Xatolik yuz berdi.");
     }
 };
+
+// *********************************************************************************************************************
+export const viewAdminDesignAction = async (ctx: any): Promise<void> => {
+    ctx.match[1] = parseInt(ctx.match[1]);
+    const designId = ctx.match[1];
+    const design = await designService.getDesignById(designId);
+    if (!design) {
+        await ctx.reply("Dizayn topilmadi.");
+        return;
+    }
+
+    consola.warn(design);
+
+    const i18n = ctx.i18n;
+    // await ctx.replyWithPhoto(design.image, {
+    //     caption: i18n.t("admin.design.view.text", {
+    //         title: design.title_uz,
+    //         description: design.description_uz,
+    //         price: design.price,
+    //         category: design.category.name_uz,
+    //         status: design.status
+    //     }),
+    //     parse_mode: "HTML",
+    // });
+}
 
 // Shop menyuga qaytish uchun ishga tushdi(SHOP)
 export const backToShopMenuAction = async (ctx: any): Promise<void> => {

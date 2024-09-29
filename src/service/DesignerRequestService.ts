@@ -28,6 +28,18 @@ export class DesignerRequestService {
         });
     }
 
+    async getApprovedRequests(): Promise<DesignerRequest[]> {
+        return this.designerRequestRepository.find({
+            where: {status: 'approved'}
+        });
+    }
+
+    async getDesignerRequestByUserId(userId: number): Promise<DesignerRequest | null> {
+        return this.designerRequestRepository.findOne({
+            where: {user: {id: userId}}
+        });
+    }
+
     // Tasdiqlash (so'rovni approved holatiga o'tkazish)
     async approveRequest(requestId: number): Promise<void> {
         const request = await this.designerRequestRepository.findOne({where: {id: requestId}});

@@ -23,7 +23,7 @@ export class User {
     phone?: string = '';
 
     @Column({nullable: false})
-    role: string | 'user' | 'admin' = 'user';
+    role: string | 'user' | 'admin' | 'designer' = 'user';
 
     @Column({default: 'uz'})
     language!: string;

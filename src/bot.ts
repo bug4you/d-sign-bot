@@ -16,37 +16,43 @@ import {
     backToShopMenuAction,
     cartAction,
     clearCartAction,
-    getCategoriesAction,
+    getAllApprovedDesignersAction,
+    getAllApprovedDesignsAction, getAllPendingDesignersAction,
+    getAllPendingDesignsAction,
+    getCategoriesAction, getDesignerRequestByIdAction,
     getMyApprovedDesignsAction,
-    handleDesignerApproval,
-    pendingRequestsAction,
+    getMyPendingDesignsAction,
     profileAction,
     profileBotStatisticsAction,
     profileInfoAction,
     removeFromCartAction,
-    requestDesignerAction,
-    shopMenuAction,
     shopCategoriesAction,
+    shopMenuAction,
     shopMyActiveOrdersAction,
     shopMyCompletedOrdersAction,
     startAction,
+    viewAdminDesignAction,
     viewDesignAction,
-    viewNextDesignAction,
-    viewPreviousDesignAction,
     viewDesignAllCategoryAction,
     viewDesignWithCategoryAction,
-    viewNextDesignWithCategoryAction, viewPreviousDesignWithCategoryAction, getMyPendingDesignsAction
+    viewNextDesignAction,
+    viewNextDesignWithCategoryAction,
+    viewPreviousDesignAction,
+    viewPreviousDesignWithCategoryAction
 } from "./utils/BotActions";
 import {CategoryService} from "./service/CategoryService";
 import {
     designerLastNameRequestScene,
     designerNameRequestScene,
-    designerPassportRequestScene, designerPhoneRequestScene, designerRequestConfirmationScene
+    designerPassportRequestScene,
+    designerPhoneRequestScene,
+    designerRequestConfirmationScene
 } from "./wizard/DesignerRequestWizard";
 import {
     newDesignCategoryScene,
     newDesignConfirmationScene,
-    newDesignDescriptionScene, newDesignImageScene,
+    newDesignDescriptionScene,
+    newDesignImageScene,
     newDesignPriceScene,
     newDesignTitleScene
 } from "./wizard/AddNewDesignWizard";
@@ -131,6 +137,14 @@ AppDataSource.initialize()
             }
         });
         bot.command(/rfc_([0-9]+)/, removeFromCartAction);
+
+        // bot.command(/view_([0-9]+)/, viewDesignAction);
+
+        bot.hears(/aview_([0-9]+)/, viewAdminDesignAction);
+
+        bot.hears(/view_designer_([0-9]+)/, async (ctx) => {
+            await getDesignerRequestByIdAction(ctx);
+        });
 
         bot.on("text", async (ctx) => {
             // @ts-ignore
@@ -240,11 +254,19 @@ AppDataSource.initialize()
                     ctx.scene.enter("DesignerNameRequestScene");
                     break;
                 }
+                // List of all unapproved designers for admin(ADMIN)
                 case i18n.t("profile.menu.unapproved_designers"):
-                    await pendingRequestsAction(ctx);
+                    await getAllPendingDesignersAction(ctx);
                     break;
+                // List of all unapproved designers for admin(ADMIN)
                 case i18n.t("profile.menu.approved_designers"):
-                    await handleDesignerApproval(ctx);
+                    await getAllApprovedDesignersAction(ctx);
+                    break;
+                case i18n.t("profile.menu.approved_designs"):
+                    await getAllApprovedDesignsAction(ctx);
+                    break;
+                case i18n.t("profile.menu.unapproved_designs"):
+                    await getAllPendingDesignsAction(ctx);
                     break;
                 case i18n.t("profile.menu.add_new_design"):
                     await addNewDesignAction(ctx);
