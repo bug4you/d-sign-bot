@@ -17,11 +17,15 @@ import {
     cartAction,
     clearCartAction,
     getAllApprovedDesignersAction,
-    getAllApprovedDesignsAction, getAllPendingDesignersAction,
+    getAllApprovedDesignsAction,
+    getAllPendingDesignersAction,
     getAllPendingDesignsAction,
-    getCategoriesAction, getDesignerRequestByIdAction,
+    getCategoriesAction,
+    getDesignerRequestByIdAction,
     getMyApprovedDesignsAction,
+    getMyApprovedViewDesignAction,
     getMyPendingDesignsAction,
+    getMyPendingViewDesignAction,
     profileAction,
     profileBotStatisticsAction,
     profileInfoAction,
@@ -144,6 +148,20 @@ AppDataSource.initialize()
 
         bot.hears(/view_designer_([0-9]+)/, async (ctx) => {
             await getDesignerRequestByIdAction(ctx);
+        });
+
+        /**
+         * Mening tasdiqlanmagan dizaynlarimni ko'rish uchun
+         * @type {RegExp}
+         * @param ctx
+         * */
+        bot.hears(/mpvdesign_([0-9]+)/, async (ctx) => {
+            consola.info(ctx.message.text);
+            await getMyPendingViewDesignAction(ctx);
+        });
+
+        bot.hears(/mvdesign_([0-9]+)/, async (ctx) => {
+            await getMyApprovedViewDesignAction(ctx);
         });
 
         bot.on("text", async (ctx) => {

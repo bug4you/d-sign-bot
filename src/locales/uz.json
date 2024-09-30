@@ -100,9 +100,9 @@
       "approved_designers": "\uD83D\uDC68\u200D\uD83C\uDFA8  Dizayner ✅",
       "unapproved_designs": "\uD83C\uDFDD Dizaynlar ⏳",
       "approved_designs": "\uD83C\uDFDD Dizaynlar ✅",
-      "me_not_approved_design": "Tasdiqlanmagan dizaynlarim",
-      "me_approved_design": "Tasdiqlangan dizaynlarim",
-      "add_new_design": "\uD83D\uDCC4 Yangi dizayn qo'shish",
+      "me_not_approved_design": "🎨 Dizaynlarim ⏳",
+      "me_approved_design": "🎨 Dizaynlarim ✅",
+      "add_new_design": "➕ Dizayn qo'shish",
       "back_to_menu": "\u2B05\uFE0F Menyuga qaytish",
       "being_designer": "\uD83D\uDC64 Dizayner bo'lish"
     },
@@ -293,9 +293,17 @@
         "title": "<b>Tasdiqlangan dizaynlar</b>",
         "empty": "<i>Tasdiqlangan dizaynlar mavjud emas.</i>"
       },
+      "my_approved": {
+        "title": "<b>Mening tasdiqlangan dizaynlarim</b>",
+        "empty": "<i>Mening tasdiqlangan dizaynlarim mavjud emas.</i>"
+      },
       "pending": {
         "title": "<b>Tasdiqlanmagan dizaynlar</b>",
         "empty": "<i>Tasdiqlanmagan dizaynlar mavjud emas.</i>"
+      },
+      "my_pending": {
+        "title": "<b>Mening tasdiqlanmagan dizaynlarim</b>",
+        "empty": "<i>Mening tasdiqlanmagan dizaynlarim mavjud emas.</i>"
       },
       "view": {
         "text": "<b>\uD83C\uDF81 Dizayn:</b>\n<i>Quyidagi ma'lumotlar sizning tanlagan dizaynlar bo'yicha:</i>\n\n<b>\uD83C\uDF81 Nomi:</b> <i>${title}</i>\n<b>\uD83C\uDF81 Tavsifi:</b> <i>${description}</i>\n<b>\uD83C\uDF81 Narxi:</b> <i>${price}</i>\n<b>\uD83C\uDF81 Kategoriya:</b> <i>${category}</i>\n\uD83C\uDF81 Bekor qilish:</b> <i>/amuted_{designId}</i>"

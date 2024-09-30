@@ -477,14 +477,16 @@ export const getMyApprovedDesignsAction = async (ctx: any): Promise<void> => {
         const designs = await designService.getUserApprovedDesigns(user.id);
         console.clear();
         consola.box(designs);
+        const i18n = ctx.i18n;
         if (designs.length > 0) {
-            let text = "<b>Sizning tasdiqlangan dizaynlaringiz:</b>";
+            let text = i18n.t("admin.design.my_approved.title");
+            // /mvdesign_{design.id} -> My View Design
             designs.forEach((design: Design, index: number) => {
-                text += `\n${index + 1}. ${design.title_uz}  <i>/view_${design.id}</i>`;
+                text += `\n${index + 1}. ${design.title_uz}  <i>/mvdesign_${design.id}</i>`;
             });
             await ctx.replyWithHTML(text);
         } else {
-            await ctx.replyWithHTML("<i>Sizning tasdiqlangan dizaynlaringiz yo'q.</i>");
+            await ctx.replyWithHTML(i18n.t("admin.design.my_approved.empty"));
         }
     } else {
         await ctx.reply("<i>Foydalanuvchi topilmadi.</i>");
@@ -498,19 +500,69 @@ export const getMyPendingDesignsAction = async (ctx: any): Promise<void> => {
         const designs = await designService.getUserPendingDesigns(user.id);
         console.clear();
         consola.box(designs);
+        const i18n = ctx.i18n;
         if (designs.length > 0) {
-            let text = "<b>Sizning tasdiqlanmagan dizaynlaringiz:</b>";
+            let text = i18n.t("admin.design.my_pending.title");
+            // /mpvdesign_{design.id} -> My Pending View Design
             designs.forEach((design: Design, index: number) => {
-                text += `\n${index + 1}. ${design.title_uz}  <i>/view_${design.id}</i>`;
+                text += `\n${index + 1}. ${design.title_uz}  <i>/mpvdesign_${design.id}</i>`;
             });
             await ctx.replyWithHTML(text);
         } else {
-            await ctx.replyWithHTML("<i>Sizning tasdiqlanmagan dizaynlaringiz yo'q.</i>");
+            await ctx.replyWithHTML(i18n.t("admin.design.my_pending.empty"));
         }
     } else {
         await ctx.reply("<i>Foydalanuvchi topilmadi.</i>");
     }
 };
+
+// Dizayn ko'rish uchun ishga tushdi faqat o'zinikini(ME)
+export const getMyPendingViewDesignAction = async (ctx: any): Promise<void> => {
+    ctx.match[1] = parseInt(ctx.match[1]);
+    const designId = ctx.match[1];
+    let userByTelegramId = await userService.getUserByTelegramId(ctx.from.id.toString());
+    if (!userByTelegramId) {
+        return ctx.reply("Foydalanuvchi topilmadi.");
+    }
+    const design = await designService.getDesignByIdAndDesignerId(designId, userByTelegramId.id);
+    consola.box(design);
+    if (design) {
+        const i18n = ctx.i18n;
+        await ctx.replyWithPhoto(design.image, {
+            caption: i18n.t("shop.product_view.product.text", {
+                title: design.title_uz,
+                description: design.description_uz,
+                price: design.price,
+                category: design.category.name_uz
+            }),
+            parse_mode: "HTML"
+        });
+    }
+}
+
+// Dizayn ko'rish uchun ishga tushdi(ME)
+export const getMyApprovedViewDesignAction = async (ctx: any): Promise<void> => {
+    ctx.match[1] = parseInt(ctx.match[1]);
+    const designId = ctx.match[1];
+    let userByTelegramId = await userService.getUserByTelegramId(ctx.from.id.toString());
+    if (!userByTelegramId) {
+        return ctx.reply("Foydalanuvchi topilmadi.");
+    }
+    const design = await designService.getDesignByIdAndDesignerId(designId, userByTelegramId.id);
+    consola.box(design);
+    if (design) {
+        const i18n = ctx.i18n;
+        await ctx.replyWithPhoto(design.image, {
+            caption: i18n.t("shop.product_view.product.text", {
+                title: design.title_uz,
+                description: design.description_uz,
+                price: design.price,
+                category: design.category.name_uz
+            }),
+            parse_mode: "HTML"
+        });
+    }
+}
 
 // Dizayn ko'rish uchun ishga tushdi(SHOP)
 export const viewDesignWithCategoryAction = async (ctx: any): Promise<void> => {

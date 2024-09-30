@@ -1,6 +1,5 @@
 import {Keyboard} from "telegram-keyboard";
 import {Category} from "../entity/Category";
-import consola from "consola";
 
 type CategoryType = Category[];
 
@@ -133,8 +132,7 @@ export const designerProfileButtons = (i18n: any) => {
     return Keyboard.make([
         [i18n.t("profile.menu.profile_info"), i18n.t("profile.menu.bot_statistics")],
         [i18n.t("profile.menu.add_new_design")],
-        [i18n.t("profile.menu.me_not_approved_design")],
-        [i18n.t("profile.menu.me_approved_design")],
+        [i18n.t("profile.menu.me_not_approved_design"), i18n.t("profile.menu.me_approved_design")],
         [i18n.t("menu.back_to_menu")]
     ]).reply();
 };

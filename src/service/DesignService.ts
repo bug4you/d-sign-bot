@@ -25,6 +25,13 @@ export class DesignService {
         });
     }
 
+    async getDesignByIdAndDesignerId(id: number, designerId: number): Promise<Design | null> {
+        return this.designRepository.findOne({
+            where: {id, designer: {id: designerId}},
+            relations: ["designer", "category"], // Foydalanuvchi va kategoriyani yuklash
+        });
+    }
+
     async getAllDesigns(): Promise<Design[]> {
         return this.designRepository.find({relations: ["designer", "category"]});
     }
