@@ -399,7 +399,7 @@ export const getAllApprovedDesignsAction = async (ctx: any): Promise<void> => {
             }
             let text = i18n.t("admin.design.approved.title");
             designs.forEach((design: Design, index: number) => {
-                text += `\n${index + 1}. ${design.title_uz}  <i>/aview_${design.id}</i>`;
+                text += `\n${index + 1}. ${design.title_uz}  <i>/aadview_${design.id}</i>`;
             });
 
             await ctx.replyWithHTML(text);
@@ -421,7 +421,7 @@ export const getAllPendingDesignsAction = async (ctx: any): Promise<void> => {
             }
             let text = i18n.t("admin.design.pending.title");
             designs.forEach((design: Design, index: number) => {
-                text += `\n${index + 1}. ${design.title_uz}  <i>/pdview_${design.id}</i>`;
+                text += `\n${index + 1}. ${design.title_uz}  <i>/apdview_${design.id}</i>`;
             });
 
             await ctx.replyWithHTML(text);
@@ -459,6 +459,22 @@ export const getDesignerRequestByIdAction = async (ctx: any): Promise<void> => {
             }
         }
         return;
+    } catch (e) {
+        consola.error(e);
+    }
+}
+
+export const adminApprovePendingDesignAction = async (ctx: any): Promise<void> => {
+    try {
+    //     TODO: Implement approve pending design
+    } catch (e) {
+        consola.error(e);
+    }
+}
+
+export const adminViewApprovedDesignAction = async (ctx: any): Promise<void> => {
+    try {
+        //     TODO: Implement approved design
     } catch (e) {
         consola.error(e);
     }
@@ -813,29 +829,29 @@ export const addToCartAction = async (ctx: any): Promise<void> => {
 };
 
 // *********************************************************************************************************************
-export const viewAdminDesignAction = async (ctx: any): Promise<void> => {
-    ctx.match[1] = parseInt(ctx.match[1]);
-    const designId = ctx.match[1];
-    const design = await designService.getDesignById(designId);
-    if (!design) {
-        await ctx.reply("Dizayn topilmadi.");
-        return;
-    }
-
-    consola.warn(design);
-
-    const i18n = ctx.i18n;
-    // await ctx.replyWithPhoto(design.image, {
-    //     caption: i18n.t("admin.design.view.text", {
-    //         title: design.title_uz,
-    //         description: design.description_uz,
-    //         price: design.price,
-    //         category: design.category.name_uz,
-    //         status: design.status
-    //     }),
-    //     parse_mode: "HTML",
-    // });
-}
+// export const viewAdminDesignAction = async (ctx: any): Promise<void> => {
+//     ctx.match[1] = parseInt(ctx.match[1]);
+//     const designId = ctx.match[1];
+//     const design = await designService.getDesignById(designId);
+//     if (!design) {
+//         await ctx.reply("Dizayn topilmadi.");
+//         return;
+//     }
+//
+//     consola.warn(design);
+//
+//     const i18n = ctx.i18n;
+//     // await ctx.replyWithPhoto(design.image, {
+//     //     caption: i18n.t("admin.design.view.text", {
+//     //         title: design.title_uz,
+//     //         description: design.description_uz,
+//     //         price: design.price,
+//     //         category: design.category.name_uz,
+//     //         status: design.status
+//     //     }),
+//     //     parse_mode: "HTML",
+//     // });
+// }
 
 // Shop menyuga qaytish uchun ishga tushdi(SHOP)
 export const backToShopMenuAction = async (ctx: any): Promise<void> => {

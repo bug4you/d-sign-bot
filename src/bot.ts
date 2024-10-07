@@ -11,8 +11,10 @@ import {
     addCategoryAction,
     addNewDesignAction,
     addToCartAction,
+    adminApprovePendingDesignAction,
     adminDesignerApprovalAction,
     adminDesignerDeclineAction,
+    adminViewApprovedDesignAction,
     backToShopMenuAction,
     cartAction,
     clearCartAction,
@@ -35,7 +37,6 @@ import {
     shopMyActiveOrdersAction,
     shopMyCompletedOrdersAction,
     startAction,
-    viewAdminDesignAction,
     viewDesignAction,
     viewDesignAllCategoryAction,
     viewDesignWithCategoryAction,
@@ -142,9 +143,11 @@ AppDataSource.initialize()
         });
         bot.command(/rfc_([0-9]+)/, removeFromCartAction);
 
-        // bot.command(/view_([0-9]+)/, viewDesignAction);
+        // /aadview_(\d+) - Admin Approve Design View
+        bot.hears(/aadview_([0-9]+)/, adminViewApprovedDesignAction);
 
-        bot.hears(/aview_([0-9]+)/, viewAdminDesignAction);
+        // /apdview_(\d+) - Admin Pending Design View
+        bot.hears(/apdview_([0-9]+)/, adminApprovePendingDesignAction);
 
         bot.hears(/view_designer_([0-9]+)/, async (ctx) => {
             await getDesignerRequestByIdAction(ctx);
